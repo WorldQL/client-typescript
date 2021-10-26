@@ -10,8 +10,9 @@
   ],
   "scripts": {
     "prepublishOnly": "yarn run test && yarn run build",
-    "test": "yarn run check",
+    "test": "yarn run check && yarn run lint",
     "check": "yarn run compile --noEmit",
+    "lint": "xo ./src",
     "clean": "rimraf lib",
     "compile": "tsc",
     "prebuild": "yarn run clean",
@@ -24,7 +25,8 @@
   "devDependencies": {
     "@types/node": "^16.11.6",
     "rimraf": "^3.0.2",
-    "typescript": "^4.4.4"
+    "typescript": "^4.4.4",
+    "xo": "^0.45.0"
   },
   "dependencies": {
     "flatbuffers": "^2.0.4"
