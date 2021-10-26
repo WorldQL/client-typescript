@@ -1,2 +1,2 @@
-export { deserializeMessage, serializeMessage } from './codec.js'
+export { Client } from './client'
 export type { Vec3d, Record, Entity, Message } from './interfaces.js'
