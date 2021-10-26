@@ -1,5 +1,6 @@
 import { EventEmitter } from 'eventemitter3'
 import ReconnectingWebSocket from 'reconnecting-websocket'
+import { v4 as uuid } from 'uuid'
 import { deserializeMessage, serializeMessage } from './codec.js'
 import type { Message } from './interfaces.js'
 
@@ -10,10 +11,13 @@ interface Events {
 }
 
 export class Client extends EventEmitter<Events> {
+  private readonly _uuid: string
   private readonly _ws: ReconnectingWebSocket
 
   constructor(ws: string) {
     super()
+
+    this._uuid = uuid()
     this._ws = new ReconnectingWebSocket(ws, [], { startClosed: true })
 
     this._ws.addEventListener('open', () => {
