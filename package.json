@@ -1,7 +1,29 @@
 {
   "name": "worldql-ts-client",
   "version": "0.1.0",
-  "main": "index.js",
+  "type": "module",
+  "exports": "./lib/index.js",
+  "types": "./lib/index.d.ts",
+  "sideEffects": false,
+  "files": [
+    "lib/**/*"
+  ],
+  "scripts": {
+    "prepublishOnly": "yarn run test && yarn run build",
+    "test": "yarn run check",
+    "check": "yarn run compile --noEmit",
+    "clean": "rimraf lib",
+    "compile": "tsc",
+    "prebuild": "yarn run clean",
+    "build": "yarn run compile",
+    "predev": "yarn run clean",
+    "dev": "yarn run compile --watch"
+  },
   "license": "UNLICENSED",
-  "private": true
+  "private": true,
+  "devDependencies": {
+    "@types/node": "^16.11.6",
+    "rimraf": "^3.0.2",
+    "typescript": "^4.4.4"
+  }
 }
