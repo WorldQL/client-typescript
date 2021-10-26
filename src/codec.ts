@@ -82,13 +82,16 @@ const decodeEntity: (entityT: EntityT) => Readonly<Entity> = entityT => {
 // #endregion
 
 // #region Message
-const encodeMessage: (message: Message) => MessageT = message => {
+const encodeMessage: (message: Message, uuid: string) => MessageT = (
+  message,
+  uuid
+) => {
   const records = message.records?.map(x => encodeRecord(x)) ?? []
   const entities = message.entities?.map(x => encodeEntity(x)) ?? []
 
   const messageT = new MessageT(
     message.instruction,
-    message.senderUuid,
+    uuid,
     message.worldName,
     message.data,
     records,
@@ -104,7 +107,6 @@ const decodeMessage: (messageT: MessageT) => Readonly<Message> = messageT => {
   // TODO: data, flex
   const message: Message = {
     instruction: decodeString(messageT.instruction),
-    senderUuid: decodeString(messageT.senderUuid),
     worldName: decodeString(messageT.worldName),
 
     records: messageT.records.map(x => decodeRecord(x)),
@@ -117,15 +119,16 @@ const decodeMessage: (messageT: MessageT) => Readonly<Message> = messageT => {
 // #endregion
 
 // #region (De)serialization
-export const serializeMessage: (message: Message) => Uint8Array = message_ => {
-  const message = encodeMessage(message_)
+export const serializeMessage: (message: Message, uuid: string) => Uint8Array =
+  (message, uuid) => {
+    const messageT = encodeMessage(message, uuid)
 
-  const builder = new Builder(1024)
-  const offset = message.pack(builder)
+    const builder = new Builder(1024)
+    const offset = messageT.pack(builder)
 
-  builder.finish(offset)
-  return builder.asUint8Array()
-}
+    builder.finish(offset)
+    return builder.asUint8Array()
+  }
 
 export const deserializeMessage: (
   bytes: ArrayBuffer | Uint8Array

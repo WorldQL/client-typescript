@@ -44,7 +44,7 @@ export class Client extends EventEmitter<Events> {
   }
 
   public sendMessage(message: Readonly<Message>): void {
-    const data = serializeMessage(message)
+    const data = serializeMessage(message, this._uuid)
     this._ws.send(data)
   }
 

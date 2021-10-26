@@ -22,7 +22,6 @@ export interface Entity {
 
 export interface Message {
   instruction: string
-  senderUuid: string
   worldName: string
   data?: string
   records?: Record[]
