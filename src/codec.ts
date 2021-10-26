@@ -1,8 +1,14 @@
-import type { Vec3d, Record, Entity, Message } from './interfaces.js'
-import { Vec3dT, RecordT, EntityT, MessageT, Message as MessageFB } from './worldql-fb/index.js'
 import { Builder, ByteBuffer } from 'flatbuffers'
+import type { Entity, Message, Record, Vec3d } from './interfaces.js'
+import {
+  EntityT,
+  Message as MessageFB,
+  MessageT,
+  RecordT,
+  Vec3dT,
+} from './worldql-fb/index.js'
 
-//#region Utils
+// #region Utils
 const decodeString: (string: string | Uint8Array) => string = string => {
   if (typeof string === 'string') return string
   if (string instanceof Uint8Array) {
@@ -11,9 +17,9 @@ const decodeString: (string: string | Uint8Array) => string = string => {
 
   throw new TypeError('unknown string-like type')
 }
-//#endregion
+// #endregion
 
-//#region Vec3d
+// #region Vec3d
 const encodeVec3d: (vec: Vec3d) => Vec3dT = vec => {
   return new Vec3dT(vec.x, vec.y, vec.z)
 }
@@ -27,16 +33,16 @@ const decodeVec3d: (vec3dT: Vec3dT) => Readonly<Vec3d> = vec3dT => {
 
   return Object.freeze(vec)
 }
-//#endregion
+// #endregion
 
-//#region Record
+// #region Record
 const encodeRecord: (record: Record) => RecordT = record => {
   return new RecordT(
     record.uuid,
     encodeVec3d(record.position),
     record.worldName,
     record.data,
-    [] // record.flex
+    [] // Record.flex
   )
 }
 
@@ -50,16 +56,16 @@ const decodeRecord: (recordT: RecordT) => Readonly<Record> = recordT => {
 
   return Object.freeze(record)
 }
-//#endregion
+// #endregion
 
-//#region Entity
+// #region Entity
 const encodeEntity: (entity: Entity) => EntityT = entity => {
   return new EntityT(
     entity.uuid,
     encodeVec3d(entity.position),
     entity.worldName,
     entity.data,
-    [] // entity.flex
+    [] // Entity.flex
   )
 }
 
@@ -73,46 +79,46 @@ const decodeEntity: (entityT: EntityT) => Readonly<Entity> = entityT => {
 
   return Object.freeze(entity)
 }
-//#endregion
+// #endregion
 
-//#region Message
-const encodeMessage: (msg: Message) => MessageT = msg => {
-  const records = msg.records?.map(x => encodeRecord(x)) ?? []
-  const entities = msg.entities?.map(x => encodeEntity(x)) ?? []
+// #region Message
+const encodeMessage: (message: Message) => MessageT = message => {
+  const records = message.records?.map(x => encodeRecord(x)) ?? []
+  const entities = message.entities?.map(x => encodeEntity(x)) ?? []
 
-  const message = new MessageT(
-    msg.instruction,
-    msg.senderUuid,
-    msg.worldName,
-    msg.data,
+  const messageT = new MessageT(
+    message.instruction,
+    message.senderUuid,
+    message.worldName,
+    message.data,
     records,
     entities,
-    encodeVec3d(msg.position),
-    [] // msg.flex
+    encodeVec3d(message.position),
+    [] // Msg.flex
   )
 
-  return message
+  return messageT
 }
 
-const decodeMessage: (msgT: MessageT) => Readonly<Message> = msgT => {
+const decodeMessage: (messageT: MessageT) => Readonly<Message> = messageT => {
   // TODO: data, flex
   const message: Message = {
-    instruction: decodeString(msgT.instruction),
-    senderUuid: decodeString(msgT.senderUuid),
-    worldName: decodeString(msgT.worldName),
+    instruction: decodeString(messageT.instruction),
+    senderUuid: decodeString(messageT.senderUuid),
+    worldName: decodeString(messageT.worldName),
 
-    records: msgT.records.map(x => decodeRecord(x)),
-    entities: msgT.entities.map(x => decodeEntity(x)),
-    position: decodeVec3d(msgT.position),
+    records: messageT.records.map(x => decodeRecord(x)),
+    entities: messageT.entities.map(x => decodeEntity(x)),
+    position: decodeVec3d(messageT.position),
   }
 
   return Object.freeze(message)
 }
-//#endregion
+// #endregion
 
-//#region (De)serialization
-export const serializeMessage: (msg: Message) => Uint8Array = msg => {
-  const message = encodeMessage(msg)
+// #region (De)serialization
+export const serializeMessage: (message: Message) => Uint8Array = message_ => {
+  const message = encodeMessage(message_)
 
   const builder = new Builder(1024)
   const offset = message.pack(builder)
@@ -121,13 +127,15 @@ export const serializeMessage: (msg: Message) => Uint8Array = msg => {
   return builder.asUint8Array()
 }
 
-export const deserializeMessage: (bytes: ArrayBuffer | Uint8Array) => Readonly<Message> = bytes => {
+export const deserializeMessage: (
+  bytes: ArrayBuffer | Uint8Array
+) => Readonly<Message> = bytes => {
   const u8 = bytes instanceof ArrayBuffer ? new Uint8Array(bytes) : bytes
   const buf = new ByteBuffer(u8)
 
-  const msgRaw = MessageFB.getRootAsMessage(buf)
-  const msgT = msgRaw.unpack()
+  const messageRaw = MessageFB.getRootAsMessage(buf)
+  const messageT = messageRaw.unpack()
 
-  return decodeMessage(msgT)
+  return decodeMessage(messageT)
 }
-//#endregion
+// #endregion
