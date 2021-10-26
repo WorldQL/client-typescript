@@ -3,6 +3,7 @@
   "semicolon": false,
   "prettier": true,
 
+  "ignores": ["./src/worldql-fb/messages/*.ts"],
   "rules": {
     "no-negated-condition": 0,
     "sort-imports": ["error", {
