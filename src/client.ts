@@ -10,15 +10,22 @@ interface Events {
   message: Message
 }
 
+export interface ClientOptions {
+  /**
+   * WorldQL WebSocket Address
+   */
+  ws: string
+}
+
 export class Client extends EventEmitter<Events> {
   private readonly _uuid: string
   private readonly _ws: ReconnectingWebSocket
 
-  constructor(ws: string) {
+  constructor(options: ClientOptions) {
     super()
 
     this._uuid = uuid()
-    this._ws = new ReconnectingWebSocket(ws, [], { startClosed: true })
+    this._ws = new ReconnectingWebSocket(options.ws, [], { startClosed: true })
 
     this._ws.addEventListener('open', () => {
       this.emit('connected')
