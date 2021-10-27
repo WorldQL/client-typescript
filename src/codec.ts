@@ -59,11 +59,12 @@ const decodeRecord: (recordT: RecordT) => Readonly<Record> = recordT => {
     throw new TypeError('record world_name should never be null')
   }
 
-  // TODO: data, flex
+  // TODO: flex
   const record: Record = {
     uuid: decodeString(recordT.uuid),
     position: decodeVec3d(recordT.position),
     worldName: decodeString(recordT.worldName),
+    data: (recordT.data && decodeString(recordT.data)) ?? undefined,
   }
 
   return Object.freeze(record)
@@ -94,11 +95,12 @@ const decodeEntity: (entityT: EntityT) => Readonly<Entity> = entityT => {
     throw new TypeError('entity world_name should never be null')
   }
 
-  // TODO: data, flex
+  // TODO: flex
   const entity: Entity = {
     uuid: decodeString(entityT.uuid),
     position: decodeVec3d(entityT.position),
     worldName: decodeString(entityT.worldName),
+    data: (entityT.data && decodeString(entityT.data)) ?? undefined,
   }
 
   return Object.freeze(entity)
@@ -120,8 +122,8 @@ const encodeMessage: (message: Message, uuid: string) => MessageT = (
     message.data,
     records,
     entities,
-    encodeVec3d(message.position),
-    [] // Msg.flex
+    (message.position && encodeVec3d(message.position)) ?? undefined,
+    [] // TODO: message.flex
   )
 
   return messageT
@@ -136,14 +138,15 @@ const decodeMessage: (messageT: MessageT) => Readonly<Message> = messageT => {
     throw new TypeError('entity world_name should never be null')
   }
 
-  // TODO: data, flex
+  // TODO: flex
   const message: Message = {
     instruction: decodeString(messageT.instruction),
     worldName: decodeString(messageT.worldName),
-
+    data: (messageT.data && decodeString(messageT.data)) ?? undefined,
     records: messageT.records.map(x => decodeRecord(x)),
     entities: messageT.entities.map(x => decodeEntity(x)),
-    position: decodeVec3d(messageT.position),
+    position:
+      (messageT.position && decodeVec3d(messageT.position)) ?? undefined,
   }
 
   return Object.freeze(message)
