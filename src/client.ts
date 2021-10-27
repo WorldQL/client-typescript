@@ -15,6 +15,13 @@ export interface ClientOptions {
    * WorldQL WebSocket Address
    */
   ws: string
+
+  /**
+   * Connect to WebSocket automatically
+   *
+   * Defaults to `false`
+   */
+  autoconnect?: boolean
 }
 
 export class Client extends EventEmitter<Events> {
@@ -39,6 +46,8 @@ export class Client extends EventEmitter<Events> {
       if (typeof ev.data === 'string') return
       void this._handleMessage(ev)
     })
+
+    if (options.autoconnect) this._ws.reconnect()
   }
 
   public connect(): void {
