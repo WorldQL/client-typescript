@@ -117,9 +117,9 @@ const encodeMessage: (message: Message, uuid: string) => MessageT = (
 
   const messageT = new MessageT(
     message.instruction,
+    message.parameter,
     uuid,
     message.worldName,
-    message.data,
     records,
     entities,
     (message.position && encodeVec3d(message.position)) ?? undefined,
@@ -140,9 +140,10 @@ const decodeMessage: (messageT: MessageT) => Readonly<Message> = messageT => {
 
   // TODO: flex
   const message: Message = {
-    instruction: decodeString(messageT.instruction),
+    instruction: messageT.instruction,
+    parameter:
+      (messageT.parameter && decodeString(messageT.parameter)) ?? undefined,
     worldName: decodeString(messageT.worldName),
-    data: (messageT.data && decodeString(messageT.data)) ?? undefined,
     records: messageT.records.map(x => decodeRecord(x)),
     entities: messageT.entities.map(x => decodeEntity(x)),
     position:

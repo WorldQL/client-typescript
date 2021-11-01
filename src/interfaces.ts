@@ -1,3 +1,5 @@
+import { Instruction } from './worldql-fb/index.js'
+
 export interface Vec3d {
   x: number
   y: number
@@ -21,9 +23,9 @@ export interface Entity {
 }
 
 export interface Message {
-  instruction: string
+  instruction: Instruction
+  parameter?: string
   worldName: string
-  data?: string
   records?: Record[]
   entities?: Entity[]
   position?: Vec3d
