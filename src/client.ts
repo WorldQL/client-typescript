@@ -5,9 +5,10 @@ import { deserializeMessage, serializeMessage } from './codec.js'
 import type { Message } from './interfaces.js'
 
 interface Events {
-  connected: never
-  error: Error
-  message: Message
+  // eslint-disable-next-line @typescript-eslint/ban-types
+  connected: []
+  error: [Error]
+  message: [Message]
 }
 
 export interface ClientOptions {
