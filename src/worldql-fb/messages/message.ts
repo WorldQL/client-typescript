@@ -3,6 +3,7 @@
 import * as flatbuffers from 'flatbuffers';
 
 import { Entity, EntityT } from '../../worldql-fb/messages/entity';
+import { Instruction } from '../../worldql-fb/messages/instruction';
 import { Record, RecordT } from '../../worldql-fb/messages/record';
 import { Vec3d, Vec3dT } from '../../worldql-fb/messages/vec3d';
 
@@ -25,30 +26,28 @@ static getSizePrefixedRootAsMessage(bb:flatbuffers.ByteBuffer, obj?:Message):Mes
   return (obj || new Message()).__init(bb.readInt32(bb.position()) + bb.position(), bb);
 }
 
-instruction():string|null
-instruction(optionalEncoding:flatbuffers.Encoding):string|Uint8Array|null
-instruction(optionalEncoding?:any):string|Uint8Array|null {
+instruction():Instruction {
   const offset = this.bb!.__offset(this.bb_pos, 4);
+  return offset ? this.bb!.readUint8(this.bb_pos + offset) : Instruction.Heartbeat;
+}
+
+parameter():string|null
+parameter(optionalEncoding:flatbuffers.Encoding):string|Uint8Array|null
+parameter(optionalEncoding?:any):string|Uint8Array|null {
+  const offset = this.bb!.__offset(this.bb_pos, 6);
   return offset ? this.bb!.__string(this.bb_pos + offset, optionalEncoding) : null;
 }
 
 senderUuid():string|null
 senderUuid(optionalEncoding:flatbuffers.Encoding):string|Uint8Array|null
 senderUuid(optionalEncoding?:any):string|Uint8Array|null {
-  const offset = this.bb!.__offset(this.bb_pos, 6);
+  const offset = this.bb!.__offset(this.bb_pos, 8);
   return offset ? this.bb!.__string(this.bb_pos + offset, optionalEncoding) : null;
 }
 
 worldName():string|null
 worldName(optionalEncoding:flatbuffers.Encoding):string|Uint8Array|null
 worldName(optionalEncoding?:any):string|Uint8Array|null {
-  const offset = this.bb!.__offset(this.bb_pos, 8);
-  return offset ? this.bb!.__string(this.bb_pos + offset, optionalEncoding) : null;
-}
-
-data():string|null
-data(optionalEncoding:flatbuffers.Encoding):string|Uint8Array|null
-data(optionalEncoding?:any):string|Uint8Array|null {
   const offset = this.bb!.__offset(this.bb_pos, 10);
   return offset ? this.bb!.__string(this.bb_pos + offset, optionalEncoding) : null;
 }
@@ -97,20 +96,20 @@ static startMessage(builder:flatbuffers.Builder) {
   builder.startObject(8);
 }
 
-static addInstruction(builder:flatbuffers.Builder, instructionOffset:flatbuffers.Offset) {
-  builder.addFieldOffset(0, instructionOffset, 0);
+static addInstruction(builder:flatbuffers.Builder, instruction:Instruction) {
+  builder.addFieldInt8(0, instruction, Instruction.Heartbeat);
+}
+
+static addParameter(builder:flatbuffers.Builder, parameterOffset:flatbuffers.Offset) {
+  builder.addFieldOffset(1, parameterOffset, 0);
 }
 
 static addSenderUuid(builder:flatbuffers.Builder, senderUuidOffset:flatbuffers.Offset) {
-  builder.addFieldOffset(1, senderUuidOffset, 0);
+  builder.addFieldOffset(2, senderUuidOffset, 0);
 }
 
 static addWorldName(builder:flatbuffers.Builder, worldNameOffset:flatbuffers.Offset) {
-  builder.addFieldOffset(2, worldNameOffset, 0);
-}
-
-static addData(builder:flatbuffers.Builder, dataOffset:flatbuffers.Offset) {
-  builder.addFieldOffset(3, dataOffset, 0);
+  builder.addFieldOffset(3, worldNameOffset, 0);
 }
 
 static addRecords(builder:flatbuffers.Builder, recordsOffset:flatbuffers.Offset) {
@@ -182,9 +181,9 @@ static finishSizePrefixedMessageBuffer(builder:flatbuffers.Builder, offset:flatb
 unpack(): MessageT {
   return new MessageT(
     this.instruction(),
+    this.parameter(),
     this.senderUuid(),
     this.worldName(),
-    this.data(),
     this.bb!.createObjList(this.records.bind(this), this.recordsLength()),
     this.bb!.createObjList(this.entities.bind(this), this.entitiesLength()),
     (this.position() !== null ? this.position()!.unpack() : null),
@@ -195,9 +194,9 @@ unpack(): MessageT {
 
 unpackTo(_o: MessageT): void {
   _o.instruction = this.instruction();
+  _o.parameter = this.parameter();
   _o.senderUuid = this.senderUuid();
   _o.worldName = this.worldName();
-  _o.data = this.data();
   _o.records = this.bb!.createObjList(this.records.bind(this), this.recordsLength());
   _o.entities = this.bb!.createObjList(this.entities.bind(this), this.entitiesLength());
   _o.position = (this.position() !== null ? this.position()!.unpack() : null);
@@ -207,10 +206,10 @@ unpackTo(_o: MessageT): void {
 
 export class MessageT {
 constructor(
-  public instruction: string|Uint8Array|null = null,
+  public instruction: Instruction = Instruction.Heartbeat,
+  public parameter: string|Uint8Array|null = null,
   public senderUuid: string|Uint8Array|null = null,
   public worldName: string|Uint8Array|null = null,
-  public data: string|Uint8Array|null = null,
   public records: (RecordT)[] = [],
   public entities: (EntityT)[] = [],
   public position: Vec3dT|null = null,
@@ -219,19 +218,18 @@ constructor(
 
 
 pack(builder:flatbuffers.Builder): flatbuffers.Offset {
-  const instruction = (this.instruction !== null ? builder.createString(this.instruction!) : 0);
+  const parameter = (this.parameter !== null ? builder.createString(this.parameter!) : 0);
   const senderUuid = (this.senderUuid !== null ? builder.createString(this.senderUuid!) : 0);
   const worldName = (this.worldName !== null ? builder.createString(this.worldName!) : 0);
-  const data = (this.data !== null ? builder.createString(this.data!) : 0);
   const records = Message.createRecordsVector(builder, builder.createObjectOffsetList(this.records));
   const entities = Message.createEntitiesVector(builder, builder.createObjectOffsetList(this.entities));
   const flex = Message.createFlexVector(builder, this.flex);
 
   Message.startMessage(builder);
-  Message.addInstruction(builder, instruction);
+  Message.addInstruction(builder, this.instruction);
+  Message.addParameter(builder, parameter);
   Message.addSenderUuid(builder, senderUuid);
   Message.addWorldName(builder, worldName);
-  Message.addData(builder, data);
   Message.addRecords(builder, records);
   Message.addEntities(builder, entities);
   Message.addPosition(builder, (this.position !== null ? this.position!.pack(builder) : 0));
