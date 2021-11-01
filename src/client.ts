@@ -8,7 +8,7 @@ interface Events {
   // eslint-disable-next-line @typescript-eslint/ban-types
   connected: []
   error: [Error]
-  message: [Message]
+  message: [Readonly<Message>]
 }
 
 export interface ClientOptions {
