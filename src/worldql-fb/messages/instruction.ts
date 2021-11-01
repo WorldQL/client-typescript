@@ -2,17 +2,16 @@
 
 export enum Instruction{
   Heartbeat = 0,
-  ZeroMQHandshake = 1,
-  ZeroMQPortAssign = 2,
-  LocalMessage = 3,
-  GlobalMessage = 4,
-  RecordCreate = 5,
-  RecordRead = 6,
-  RecordUpdate = 7,
-  RecordDelete = 8,
-  RecordReply = 9,
-  AreaSubscribe = 10,
-  AreaUnsubscribe = 11,
+  Handshake = 1,
+  LocalMessage = 2,
+  GlobalMessage = 3,
+  RecordCreate = 4,
+  RecordRead = 5,
+  RecordUpdate = 6,
+  RecordDelete = 7,
+  RecordReply = 8,
+  AreaSubscribe = 9,
+  AreaUnsubscribe = 10,
   Unknown = 255
 }
 
