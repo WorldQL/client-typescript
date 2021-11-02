@@ -17,6 +17,14 @@ const decodeString: (string: string | Uint8Array) => string = string => {
 
   throw new TypeError('unknown string-like type')
 }
+
+const encodeFlex: (buffer: Uint8Array) => number[] = buffer => {
+  return Array.from(buffer)
+}
+
+const decodeFlex: (flex: number[]) => Uint8Array = flex => {
+  return Uint8Array.from(flex)
+}
 // #endregion
 
 // #region Vec3d
@@ -42,7 +50,7 @@ const encodeRecord: (record: Record) => RecordT = record => {
     encodeVec3d(record.position),
     record.worldName,
     record.data,
-    [] // TODO: Record.flex
+    record.flex && encodeFlex(record.flex)
   )
 }
 
@@ -59,12 +67,12 @@ const decodeRecord: (recordT: RecordT) => Readonly<Record> = recordT => {
     throw new TypeError('record world_name should never be null')
   }
 
-  // TODO: flex
   const record: Record = {
     uuid: decodeString(recordT.uuid),
     position: decodeVec3d(recordT.position),
     worldName: decodeString(recordT.worldName),
     data: (recordT.data && decodeString(recordT.data)) ?? undefined,
+    flex: (recordT.flex && decodeFlex(recordT.flex)) ?? undefined,
   }
 
   return Object.freeze(record)
@@ -78,7 +86,7 @@ const encodeEntity: (entity: Entity) => EntityT = entity => {
     encodeVec3d(entity.position),
     entity.worldName,
     entity.data,
-    [] // TODO: Entity.flex
+    entity.flex && encodeFlex(entity.flex)
   )
 }
 
@@ -95,12 +103,12 @@ const decodeEntity: (entityT: EntityT) => Readonly<Entity> = entityT => {
     throw new TypeError('entity world_name should never be null')
   }
 
-  // TODO: flex
   const entity: Entity = {
     uuid: decodeString(entityT.uuid),
     position: decodeVec3d(entityT.position),
     worldName: decodeString(entityT.worldName),
     data: (entityT.data && decodeString(entityT.data)) ?? undefined,
+    flex: (entityT.flex && decodeFlex(entityT.flex)) ?? undefined,
   }
 
   return Object.freeze(entity)
@@ -123,7 +131,7 @@ const encodeMessage: (message: Message, uuid: string) => MessageT = (
     records,
     entities,
     (message.position && encodeVec3d(message.position)) ?? undefined,
-    [] // TODO: message.flex
+    message.flex && encodeFlex(message.flex)
   )
 
   return messageT
@@ -138,7 +146,6 @@ const decodeMessage: (messageT: MessageT) => Readonly<Message> = messageT => {
     throw new TypeError('entity world_name should never be null')
   }
 
-  // TODO: flex
   const message: Message = {
     instruction: messageT.instruction,
     parameter:
@@ -148,6 +155,7 @@ const decodeMessage: (messageT: MessageT) => Readonly<Message> = messageT => {
     entities: messageT.entities.map(x => decodeEntity(x)),
     position:
       (messageT.position && decodeVec3d(messageT.position)) ?? undefined,
+    flex: (messageT.flex && decodeFlex(messageT.flex)) ?? undefined,
   }
 
   return Object.freeze(message)
