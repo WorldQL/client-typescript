@@ -35,8 +35,13 @@ export class Client extends EventEmitter<Events> {
     })
 
     this._ws.addEventListener('close', () => {
+      this._uuid = null
       this.emit('disconnect')
     })
+  }
+
+  public get ready(): boolean {
+    return this._uuid !== null
   }
 
   public disconnect(): void {
