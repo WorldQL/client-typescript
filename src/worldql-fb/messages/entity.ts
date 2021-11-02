@@ -2,7 +2,7 @@
 
 import * as flatbuffers from 'flatbuffers';
 
-import { Vec3d, Vec3dT } from '../../worldql-fb/messages/vec3d';
+import { Vec3d, Vec3dT } from '../../worldql-fb/messages/vec3d.js';
 
 
 export class Entity {

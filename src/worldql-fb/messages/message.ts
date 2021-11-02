@@ -2,10 +2,10 @@
 
 import * as flatbuffers from 'flatbuffers';
 
-import { Entity, EntityT } from '../../worldql-fb/messages/entity';
-import { Instruction } from '../../worldql-fb/messages/instruction';
-import { Record, RecordT } from '../../worldql-fb/messages/record';
-import { Vec3d, Vec3dT } from '../../worldql-fb/messages/vec3d';
+import { Entity, EntityT } from '../../worldql-fb/messages/entity.js';
+import { Instruction } from '../../worldql-fb/messages/instruction.js';
+import { Record, RecordT } from '../../worldql-fb/messages/record.js';
+import { Vec3d, Vec3dT } from '../../worldql-fb/messages/vec3d.js';
 
 
 export class Message {
