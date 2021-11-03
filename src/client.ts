@@ -45,11 +45,17 @@ export class Client extends EventEmitter<Events> {
     if (options.autoconnect) this.connect()
   }
 
+  /**
+   * Current state of the underlying WebSocket Connection
+   */
   public get connected(): boolean {
     if (this._ws === null) return false
     return this._ws.readyState === WebSocket.OPEN
   }
 
+  /**
+   * Whether the handshake has been completed and the client is ready to send/receive messages
+   */
   public get ready(): boolean {
     if (!this.connected) return false
     if (this._uuid === null) return false
