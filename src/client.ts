@@ -16,14 +16,37 @@ interface Events {
 /* eslint-enable @typescript-eslint/ban-types */
 
 export class Client extends EventEmitter<Events> {
+  private readonly _url: string
+
   private _uuid: string | null
-  private readonly _ws: WebSocket
+  private _ws: WebSocket | null
 
   constructor(url: string) {
     super()
 
+    this._url = url
     this._uuid = null
-    this._ws = new WebSocket(url)
+    this._ws = null
+  }
+
+  public get connected(): boolean {
+    if (this._ws === null) return false
+    return this._ws.readyState === WebSocket.OPEN
+  }
+
+  public get ready(): boolean {
+    if (!this.connected) return false
+    if (this._uuid === null) return false
+
+    return true
+  }
+
+  public connect(): void {
+    if (this._ws !== null) {
+      throw new Error('cannot connect if already connected')
+    }
+
+    this._ws = new WebSocket(this._url)
 
     this._ws.addEventListener('error', ({ error }) => {
       this.emit('error', error)
@@ -36,25 +59,28 @@ export class Client extends EventEmitter<Events> {
 
     this._ws.addEventListener('close', () => {
       this._uuid = null
+      this._ws = null
+
       this.emit('disconnect')
     })
   }
 
-  public get ready(): boolean {
-    return this._uuid !== null
-  }
-
   public disconnect(): void {
+    if (this._ws === null) return
     this._ws.close()
   }
 
   public sendMessage(message: Readonly<Message>): void {
-    if (this._uuid === null) {
+    if (!this.connected) {
+      throw new Error('cannot send messages before client is connected')
+    }
+
+    if (!this.ready) {
       throw new Error('cannot send messages before client is ready')
     }
 
-    const data = serializeMessage(message, this._uuid)
-    this._ws.send(data)
+    const data = serializeMessage(message, this._uuid!)
+    this._ws!.send(data)
   }
 
   private async _handleMessage(ev: MessageEvent): Promise<void> {
@@ -83,7 +109,7 @@ export class Client extends EventEmitter<Events> {
     this.sendMessage({
       instruction: Instruction.Handshake,
       // TODO: World name
-      worldName: 'abc',
+      worldName: '@global',
     })
 
     this.emit('ready')
