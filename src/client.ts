@@ -15,18 +15,34 @@ interface Events {
 }
 /* eslint-enable @typescript-eslint/ban-types */
 
+export interface ClientOptions {
+  /**
+   * WorldQL WebSocket Address
+   */
+  url: string
+
+  /**
+   * Connect to WebSocket automatically
+   *
+   * Defaults to `false`
+   */
+  autoconnect?: boolean
+}
+
 export class Client extends EventEmitter<Events> {
-  private readonly _url: string
+  private readonly _options: ClientOptions
 
   private _uuid: string | null
   private _ws: WebSocket | null
 
-  constructor(url: string) {
+  constructor(options: ClientOptions) {
     super()
 
-    this._url = url
+    this._options = options
     this._uuid = null
     this._ws = null
+
+    if (options.autoconnect) this.connect()
   }
 
   public get connected(): boolean {
@@ -46,7 +62,7 @@ export class Client extends EventEmitter<Events> {
       throw new Error('cannot connect if already connected')
     }
 
-    this._ws = new WebSocket(this._url)
+    this._ws = new WebSocket(this._options.url)
 
     this._ws.addEventListener('error', ({ error }) => {
       this.emit('error', error)
