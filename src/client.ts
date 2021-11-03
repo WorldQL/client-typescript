@@ -89,6 +89,3 @@ export class Client extends EventEmitter<Events> {
     this.emit('ready')
   }
 }
-
-const client = new Client('ws://localhost:8080')
-client.on('ready', () => client.disconnect())
