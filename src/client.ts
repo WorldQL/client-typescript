@@ -4,14 +4,14 @@ import type { MessageEvent } from 'isomorphic-ws'
 import type { Buffer } from 'node:buffer'
 import { deserializeMessage, serializeMessage } from './codec.js'
 import { Instruction } from './index.js'
-import type { Message } from './interfaces.js'
+import type { IncomingMessage, Message } from './interfaces.js'
 
 /* eslint-disable @typescript-eslint/ban-types */
 interface Events {
   ready: []
   disconnect: []
   error: [Error]
-  message: [Readonly<Message>]
+  message: [Readonly<IncomingMessage>]
 }
 /* eslint-enable @typescript-eslint/ban-types */
 
@@ -130,7 +130,6 @@ export class Client extends EventEmitter<Events> {
     this._uuid = message.parameter
     this.sendMessage({
       instruction: Instruction.Handshake,
-      // TODO: World name
       worldName: '@global',
     })
 

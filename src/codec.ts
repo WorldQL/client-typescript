@@ -1,5 +1,11 @@
 import { Builder, ByteBuffer } from 'flatbuffers'
-import type { Entity, Message, Record, Vec3d } from './interfaces.js'
+import type {
+  Entity,
+  IncomingMessage,
+  Message,
+  Record,
+  Vec3d,
+} from './interfaces.js'
 import {
   EntityT,
   Message as MessageFB,
@@ -137,29 +143,35 @@ const encodeMessage: (message: Message, uuid: string) => MessageT = (
   return messageT
 }
 
-const decodeMessage: (messageT: MessageT) => Readonly<Message> = messageT => {
-  if (messageT.instruction === null) {
-    throw new TypeError('message instruction should never be null')
-  }
+const decodeMessage: (messageT: MessageT) => Readonly<IncomingMessage> =
+  messageT => {
+    if (messageT.instruction === null) {
+      throw new TypeError('message instruction should never be null')
+    }
 
-  if (messageT.worldName === null) {
-    throw new TypeError('entity world_name should never be null')
-  }
+    if (messageT.worldName === null) {
+      throw new TypeError('message world_name should never be null')
+    }
 
-  const message: Message = {
-    instruction: messageT.instruction,
-    parameter:
-      (messageT.parameter && decodeString(messageT.parameter)) ?? undefined,
-    worldName: decodeString(messageT.worldName),
-    records: messageT.records.map(x => decodeRecord(x)),
-    entities: messageT.entities.map(x => decodeEntity(x)),
-    position:
-      (messageT.position && decodeVec3d(messageT.position)) ?? undefined,
-    flex: (messageT.flex && decodeFlex(messageT.flex)) ?? undefined,
-  }
+    if (messageT.senderUuid === null) {
+      throw new TypeError('message sender_uuid should never be null')
+    }
 
-  return Object.freeze(message)
-}
+    const message: IncomingMessage = {
+      instruction: messageT.instruction,
+      parameter:
+        (messageT.parameter && decodeString(messageT.parameter)) ?? undefined,
+      worldName: decodeString(messageT.worldName),
+      senderUuid: decodeString(messageT.senderUuid),
+      records: messageT.records.map(x => decodeRecord(x)),
+      entities: messageT.entities.map(x => decodeEntity(x)),
+      position:
+        (messageT.position && decodeVec3d(messageT.position)) ?? undefined,
+      flex: (messageT.flex && decodeFlex(messageT.flex)) ?? undefined,
+    }
+
+    return Object.freeze(message)
+  }
 // #endregion
 
 // #region (De)serialization
@@ -176,7 +188,7 @@ export const serializeMessage: (message: Message, uuid: string) => Uint8Array =
 
 export const deserializeMessage: (
   bytes: ArrayBuffer | Uint8Array
-) => Readonly<Message> = bytes => {
+) => Readonly<IncomingMessage> = bytes => {
   const u8 = bytes instanceof ArrayBuffer ? new Uint8Array(bytes) : bytes
   const buf = new ByteBuffer(u8)
 

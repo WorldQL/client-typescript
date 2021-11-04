@@ -31,3 +31,7 @@ export interface Message {
   position?: Vec3d
   flex?: Uint8Array
 }
+
+export interface IncomingMessage extends Message {
+  senderUuid: string
+}
