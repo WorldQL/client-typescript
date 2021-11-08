@@ -25,7 +25,7 @@ const decodeString: (string: string | Uint8Array) => string = string => {
 }
 
 const encodeFlex: (buffer: Uint8Array) => number[] = buffer => {
-  return Array.from(buffer)
+  return [...buffer]
 }
 
 const decodeFlex: (flex: number[]) => Uint8Array = flex => {
