@@ -24,7 +24,6 @@
     "dev": "yarn run compile --watch"
   },
   "license": "UNLICENSED",
-  "private": true,
   "devDependencies": {
     "@types/node": "^16.11.6",
     "@types/uuid": "^8.3.1",
