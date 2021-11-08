@@ -1,5 +1,5 @@
 {
-  "name": "worldql-ts-client",
+  "name": "@worldql/client",
   "version": "0.1.0",
   "type": "module",
   "exports": "./lib/index.js",
