@@ -1,7 +1,7 @@
 export { Client } from './client.js'
 export type { ClientOptions } from './client.js'
 export type {
-  Vec3d,
+  Vector3,
   Record,
   Entity,
   Message,

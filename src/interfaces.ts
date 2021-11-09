@@ -1,6 +1,6 @@
 import { Instruction } from './worldql-fb/index.js'
 
-export interface Vec3d {
+export interface Vector3 {
   x: number
   y: number
   z: number
@@ -8,7 +8,7 @@ export interface Vec3d {
 
 export interface Record {
   uuid: string
-  position: Vec3d
+  position: Vector3
   worldName: string
   data?: string
   flex?: Uint8Array
@@ -16,7 +16,7 @@ export interface Record {
 
 export interface Entity {
   uuid: string
-  position: Vec3d
+  position: Vector3
   worldName: string
   data?: string
   flex?: Uint8Array
@@ -28,7 +28,7 @@ export interface Message {
   worldName: string
   records?: Record[]
   entities?: Entity[]
-  position?: Vec3d
+  position?: Vector3
   flex?: Uint8Array
 }
 

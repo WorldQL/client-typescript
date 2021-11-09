@@ -4,7 +4,7 @@ import type {
   IncomingMessage,
   Message,
   Record,
-  Vec3d,
+  Vector3,
 } from './interfaces.js'
 import {
   EntityT,
@@ -33,13 +33,13 @@ const decodeFlex: (flex: number[]) => Uint8Array = flex => {
 }
 // #endregion
 
-// #region Vec3d
-const encodeVec3d: (vec: Vec3d) => Vec3dT = vec => {
+// #region Vector3
+const encodeVector3: (vec: Vector3) => Vec3dT = vec => {
   return new Vec3dT(vec.x, vec.y, vec.z)
 }
 
-const decodeVec3d: (vec3dT: Vec3dT) => Readonly<Vec3d> = vec3dT => {
-  const vec: Vec3d = {
+const decodeVector3: (vec3dT: Vec3dT) => Readonly<Vector3> = vec3dT => {
+  const vec: Vector3 = {
     x: vec3dT.x,
     y: vec3dT.x,
     z: vec3dT.x,
@@ -53,7 +53,7 @@ const decodeVec3d: (vec3dT: Vec3dT) => Readonly<Vec3d> = vec3dT => {
 const encodeRecord: (record: Record) => RecordT = record => {
   return new RecordT(
     record.uuid,
-    encodeVec3d(record.position),
+    encodeVector3(record.position),
     record.worldName,
     record.data,
     record.flex && encodeFlex(record.flex)
@@ -75,7 +75,7 @@ const decodeRecord: (recordT: RecordT) => Readonly<Record> = recordT => {
 
   const record: Record = {
     uuid: decodeString(recordT.uuid),
-    position: decodeVec3d(recordT.position),
+    position: decodeVector3(recordT.position),
     worldName: decodeString(recordT.worldName),
     data: (recordT.data && decodeString(recordT.data)) ?? undefined,
     flex: (recordT.flex && decodeFlex(recordT.flex)) ?? undefined,
@@ -89,7 +89,7 @@ const decodeRecord: (recordT: RecordT) => Readonly<Record> = recordT => {
 const encodeEntity: (entity: Entity) => EntityT = entity => {
   return new EntityT(
     entity.uuid,
-    encodeVec3d(entity.position),
+    encodeVector3(entity.position),
     entity.worldName,
     entity.data,
     entity.flex && encodeFlex(entity.flex)
@@ -111,7 +111,7 @@ const decodeEntity: (entityT: EntityT) => Readonly<Entity> = entityT => {
 
   const entity: Entity = {
     uuid: decodeString(entityT.uuid),
-    position: decodeVec3d(entityT.position),
+    position: decodeVector3(entityT.position),
     worldName: decodeString(entityT.worldName),
     data: (entityT.data && decodeString(entityT.data)) ?? undefined,
     flex: (entityT.flex && decodeFlex(entityT.flex)) ?? undefined,
@@ -136,7 +136,7 @@ const encodeMessage: (message: Message, uuid: string) => MessageT = (
     message.worldName,
     records,
     entities,
-    (message.position && encodeVec3d(message.position)) ?? undefined,
+    (message.position && encodeVector3(message.position)) ?? undefined,
     message.flex && encodeFlex(message.flex)
   )
 
@@ -166,7 +166,7 @@ const decodeMessage: (messageT: MessageT) => Readonly<IncomingMessage> =
       records: messageT.records.map(x => decodeRecord(x)),
       entities: messageT.entities.map(x => decodeEntity(x)),
       position:
-        (messageT.position && decodeVec3d(messageT.position)) ?? undefined,
+        (messageT.position && decodeVector3(messageT.position)) ?? undefined,
       flex: (messageT.flex && decodeFlex(messageT.flex)) ?? undefined,
     }
 
