@@ -1,5 +1,5 @@
 export { Client } from './client/client.js'
-export type { ClientOptions } from './client/client.js'
+export type { ClientOptions, Events as ClientEvents } from './client/client.js'
 export type {
   Vector3,
   Record,

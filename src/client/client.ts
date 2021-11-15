@@ -8,7 +8,7 @@ import type { IncomingMessage, Message, Vector3 } from '../interfaces.js'
 import type { MessagePayload } from './interfaces.js'
 
 /* eslint-disable @typescript-eslint/ban-types */
-interface Events {
+export interface Events {
   ready: []
   disconnect: []
   error: [Error]
