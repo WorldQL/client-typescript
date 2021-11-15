@@ -3,15 +3,17 @@
 export enum Instruction{
   Heartbeat = 0,
   Handshake = 1,
-  LocalMessage = 2,
-  GlobalMessage = 3,
-  RecordCreate = 4,
-  RecordRead = 5,
-  RecordUpdate = 6,
-  RecordDelete = 7,
-  RecordReply = 8,
-  AreaSubscribe = 9,
-  AreaUnsubscribe = 10,
+  PeerConnect = 2,
+  PeerDisconnect = 3,
+  AreaSubscribe = 4,
+  AreaUnsubscribe = 5,
+  GlobalMessage = 6,
+  LocalMessage = 7,
+  RecordCreate = 8,
+  RecordRead = 9,
+  RecordUpdate = 10,
+  RecordDelete = 11,
+  RecordReply = 12,
   Unknown = 255
 }
 
