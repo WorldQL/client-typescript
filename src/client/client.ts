@@ -161,25 +161,26 @@ export class Client extends EventEmitter<Events> {
     })
   }
 
-  public recordCreate(worldName: string): void {
-    // TODO
-    throw new Error('not implemented')
-  }
+  // Disable for now, suppress lint errors
+  // public recordCreate(worldName: string): void {
+  //   // TODO
+  //   throw new Error('not implemented')
+  // }
 
-  public recordRead(worldName: string): void {
-    // TODO
-    throw new Error('not implemented')
-  }
+  // public recordRead(worldName: string): void {
+  //   // TODO
+  //   throw new Error('not implemented')
+  // }
 
-  public recordUpdate(worldName: string): void {
-    // TODO
-    throw new Error('not implemented')
-  }
+  // public recordUpdate(worldName: string): void {
+  //   // TODO
+  //   throw new Error('not implemented')
+  // }
 
-  public recordDelete(worldName: string): void {
-    // TODO
-    throw new Error('not implemented')
-  }
+  // public recordDelete(worldName: string): void {
+  //   // TODO
+  //   throw new Error('not implemented')
+  // }
 
   /**
    * Subscribe to local messages for an area.
