@@ -4,32 +4,8 @@ import type { MessageEvent } from 'isomorphic-ws'
 import type { Buffer } from 'node:buffer'
 import { deserializeMessage, serializeMessage } from '../codec.js'
 import { Instruction } from '../index.js'
-import type { IncomingMessage, Message, Vector3 } from '../interfaces.js'
-import type { MessagePayload } from './interfaces.js'
-
-/* eslint-disable @typescript-eslint/ban-types */
-export interface Events {
-  ready: []
-  disconnect: []
-  error: [Error]
-  rawMessage: [Readonly<IncomingMessage>]
-
-  peerConnect: [uuid: string]
-  peerDisconnect: [uuid: string]
-  localMessage: [
-    senderUuid: string,
-    worldName: string,
-    position: Vector3,
-    payload: MessagePayload
-  ]
-  globalMessage: [
-    senderUuid: string,
-    worldName: string,
-    payload: MessagePayload
-  ]
-  recordReply: []
-}
-/* eslint-enable @typescript-eslint/ban-types */
+import type { Message, Vector3 } from '../interfaces.js'
+import type { ClientEvents as Events, MessagePayload } from './interfaces.js'
 
 export interface ClientOptions {
   /**
