@@ -14,6 +14,8 @@ interface Events {
   error: [Error]
   rawMessage: [Readonly<IncomingMessage>]
 
+  peerConnect: [uuid: string]
+  peerDisconnect: [uuid: string]
   localMessage: [worldName: string, position: Vector3, payload: MessagePayload]
   globalMessage: [worldName: string, payload: MessagePayload]
   recordReply: []
@@ -228,6 +230,24 @@ export class Client extends EventEmitter<Events> {
     this.emit('rawMessage', message)
 
     switch (message.instruction) {
+      case Instruction.PeerConnect: {
+        if (!message.parameter) {
+          throw new Error('invalid peer connect')
+        }
+
+        this.emit('peerConnect', message.parameter)
+        break
+      }
+
+      case Instruction.PeerDisconnect: {
+        if (!message.parameter) {
+          throw new Error('invalid peer connect')
+        }
+
+        this.emit('peerDisconnect', message.parameter)
+        break
+      }
+
       case Instruction.LocalMessage: {
         if (!message.position) {
           throw new Error('invalid local message')
