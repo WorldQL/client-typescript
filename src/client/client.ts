@@ -5,7 +5,7 @@ import type { Buffer } from 'node:buffer'
 import { deserializeMessage, serializeMessage } from '../codec.js'
 import { Instruction } from '../index.js'
 import type { IncomingMessage, Message, Vector3 } from '../interfaces.js'
-import type { MessagePayload } from './methodParams.js'
+import type { MessagePayload } from './interfaces.js'
 
 /* eslint-disable @typescript-eslint/ban-types */
 interface Events {
@@ -16,8 +16,17 @@ interface Events {
 
   peerConnect: [uuid: string]
   peerDisconnect: [uuid: string]
-  localMessage: [worldName: string, position: Vector3, payload: MessagePayload]
-  globalMessage: [worldName: string, payload: MessagePayload]
+  localMessage: [
+    senderUuid: string,
+    worldName: string,
+    position: Vector3,
+    payload: MessagePayload
+  ]
+  globalMessage: [
+    senderUuid: string,
+    worldName: string,
+    payload: MessagePayload
+  ]
   recordReply: []
 }
 /* eslint-enable @typescript-eslint/ban-types */
@@ -253,16 +262,22 @@ export class Client extends EventEmitter<Events> {
           throw new Error('invalid local message')
         }
 
-        this.emit('localMessage', message.worldName, message.position, {
-          parameter: message.parameter,
-          flex: message.flex,
-        })
+        this.emit(
+          'localMessage',
+          message.senderUuid,
+          message.worldName,
+          message.position,
+          {
+            parameter: message.parameter,
+            flex: message.flex,
+          }
+        )
 
         break
       }
 
       case Instruction.GlobalMessage: {
-        this.emit('globalMessage', message.worldName, {
+        this.emit('globalMessage', message.senderUuid, message.worldName, {
           parameter: message.parameter,
           flex: message.flex,
         })
