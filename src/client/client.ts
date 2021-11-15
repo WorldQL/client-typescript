@@ -141,7 +141,7 @@ export class Client extends EventEmitter<Events> {
    */
   public globalMessage(worldName: string, parameters?: MessagePayload): void {
     this.sendRawMessage({
-      instruction: Instruction.LocalMessage,
+      instruction: Instruction.GlobalMessage,
       worldName,
       parameter: parameters?.parameter,
       flex: parameters?.flex,
