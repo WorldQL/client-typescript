@@ -117,14 +117,14 @@ export class Client extends EventEmitter<Events> {
   /**
    * Send a message to all clients which are subscribed to the given world.
    * @param worldName World Name
-   * @param parameters Optional Message Payload
+   * @param payload Optional Message Payload
    */
-  public globalMessage(worldName: string, parameters?: MessagePayload): void {
+  public globalMessage(worldName: string, payload?: MessagePayload): void {
     this.sendRawMessage({
       instruction: Instruction.GlobalMessage,
       worldName,
-      parameter: parameters?.parameter,
-      flex: parameters?.flex,
+      parameter: payload?.parameter,
+      flex: payload?.flex,
     })
   }
 
@@ -132,19 +132,19 @@ export class Client extends EventEmitter<Events> {
    * Send a message to all clients which are subscribed to a certain area in the given world.
    * @param worldName World Name
    * @param position Message Position
-   * @param parameters Optional Message Payload
+   * @param payload Optional Message Payload
    */
   public localMessage(
     worldName: string,
     position: Vector3,
-    parameters?: MessagePayload
+    payload?: MessagePayload
   ): void {
     this.sendRawMessage({
       instruction: Instruction.LocalMessage,
       worldName,
       position,
-      parameter: parameters?.parameter,
-      flex: parameters?.flex,
+      parameter: payload?.parameter,
+      flex: payload?.flex,
     })
   }
 
