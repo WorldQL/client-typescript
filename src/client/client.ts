@@ -115,6 +115,20 @@ export class Client extends EventEmitter<Events> {
 
   // #region Methods
   /**
+   * Send a message to all clients which are subscribed to the given world.
+   * @param worldName World Name
+   * @param parameters Optional Message Payload
+   */
+  public globalMessage(worldName: string, parameters?: MessagePayload): void {
+    this.sendRawMessage({
+      instruction: Instruction.GlobalMessage,
+      worldName,
+      parameter: parameters?.parameter,
+      flex: parameters?.flex,
+    })
+  }
+
+  /**
    * Send a message to all clients which are subscribed to a certain area in the given world.
    * @param worldName World Name
    * @param position Message Position
@@ -134,21 +148,7 @@ export class Client extends EventEmitter<Events> {
     })
   }
 
-  /**
-   * Send a message to all clients which are subscribed to the given world.
-   * @param worldName World Name
-   * @param parameters Optional Message Payload
-   */
-  public globalMessage(worldName: string, parameters?: MessagePayload): void {
-    this.sendRawMessage({
-      instruction: Instruction.GlobalMessage,
-      worldName,
-      parameter: parameters?.parameter,
-      flex: parameters?.flex,
-    })
-  }
-
-  // Disable for now, suppress lint errors
+  // TODO: disable for now, suppress lint errors
   // public recordCreate(worldName: string): void {
   //   // TODO
   //   throw new Error('not implemented')
