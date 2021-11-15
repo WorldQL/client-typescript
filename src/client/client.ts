@@ -70,6 +70,16 @@ export class Client extends EventEmitter<Events> {
 
     return true
   }
+
+  /**
+   * Returns the current client UUID.
+   *
+   * Throws an error if read before the client is ready.
+   */
+  public get uuid(): string {
+    if (!this.ready) throw new Error('cannot read uuid before client is ready')
+    return this._uuid!
+  }
   // #endregion
 
   // #region Lifecycle
