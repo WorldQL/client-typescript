@@ -23,12 +23,12 @@ export interface ClientOptions {
 
 export class Client extends EventEmitter<Events> {
   // #region Constructor and Fields
-  private readonly _options: ClientOptions
+  private readonly _options: Readonly<ClientOptions>
 
   private _uuid: string | null
   private _ws: WebSocket | null
 
-  constructor(options: ClientOptions) {
+  constructor(options: Readonly<ClientOptions>) {
     super()
 
     this._options = options
@@ -119,7 +119,10 @@ export class Client extends EventEmitter<Events> {
    * @param worldName World Name
    * @param payload Optional Message Payload
    */
-  public globalMessage(worldName: string, payload?: MessagePayload): void {
+  public globalMessage(
+    worldName: string,
+    payload?: Readonly<MessagePayload>
+  ): void {
     this.sendRawMessage({
       instruction: Instruction.GlobalMessage,
       worldName,
@@ -138,8 +141,8 @@ export class Client extends EventEmitter<Events> {
    */
   public localMessage(
     worldName: string,
-    position: Vector3,
-    payload?: MessagePayload
+    position: Readonly<Vector3>,
+    payload?: Readonly<MessagePayload>
   ): void {
     this.sendRawMessage({
       instruction: Instruction.LocalMessage,
@@ -178,7 +181,7 @@ export class Client extends EventEmitter<Events> {
    * @param worldName World Name
    * @param position Area Position
    */
-  public areaSubscribe(worldName: string, position: Vector3): void {
+  public areaSubscribe(worldName: string, position: Readonly<Vector3>): void {
     this.sendRawMessage({
       instruction: Instruction.AreaSubscribe,
       worldName,
@@ -191,7 +194,7 @@ export class Client extends EventEmitter<Events> {
    * @param worldName World Name
    * @param position Area Position
    */
-  public areaUnsubscribe(worldName: string, position: Vector3): void {
+  public areaUnsubscribe(worldName: string, position: Readonly<Vector3>): void {
     this.sendRawMessage({
       instruction: Instruction.AreaUnsubscribe,
       worldName,
