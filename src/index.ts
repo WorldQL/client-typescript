@@ -8,4 +8,4 @@ export type {
   Message,
   IncomingMessage,
 } from './interfaces.js'
-export { Instruction } from './worldql-fb/index.js'
+export { Instruction, Replication } from './worldql-fb/index.js'
