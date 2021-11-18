@@ -249,25 +249,30 @@ export class Client extends EventEmitter<Events> {
           'localMessage',
           message.senderUuid,
           message.worldName,
-          message.position,
-          {
+          Object.freeze(message.position),
+          Object.freeze({
             parameter: message.parameter,
             flex: message.flex,
             records: message.records,
             entities: message.entities,
-          }
+          })
         )
 
         break
       }
 
       case Instruction.GlobalMessage: {
-        this.emit('globalMessage', message.senderUuid, message.worldName, {
-          parameter: message.parameter,
-          flex: message.flex,
-          records: message.records,
-          entities: message.entities,
-        })
+        this.emit(
+          'globalMessage',
+          message.senderUuid,
+          message.worldName,
+          Object.freeze({
+            parameter: message.parameter,
+            flex: message.flex,
+            records: message.records,
+            entities: message.entities,
+          })
+        )
 
         break
       }
