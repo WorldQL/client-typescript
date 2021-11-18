@@ -126,15 +126,18 @@ export class Client extends EventEmitter<Events> {
   /**
    * Send a message to all clients which are subscribed to the given world.
    * @param worldName World Name
+   * @param replication Optional Replication Strategy, defaults to `ExceptSelf`
    * @param payload Optional Message Payload
    */
   public globalMessage(
     worldName: string,
+    replication = Replication.ExceptSelf,
     payload?: Readonly<MessagePayload>
   ): void {
     this.sendRawMessage({
       instruction: Instruction.GlobalMessage,
       worldName,
+      replication,
       parameter: payload?.parameter,
       flex: payload?.flex,
       records: payload?.records,
@@ -146,16 +149,19 @@ export class Client extends EventEmitter<Events> {
    * Send a message to all clients which are subscribed to a certain area in the given world.
    * @param worldName World Name
    * @param position Message Position
+   * @param replication Optional Replication Strategy, defaults to `ExceptSelf`
    * @param payload Optional Message Payload
    */
   public localMessage(
     worldName: string,
     position: Readonly<Vector3>,
+    replication = Replication.ExceptSelf,
     payload?: Readonly<MessagePayload>
   ): void {
     this.sendRawMessage({
       instruction: Instruction.LocalMessage,
       worldName,
+      replication,
       position,
       parameter: payload?.parameter,
       flex: payload?.flex,
