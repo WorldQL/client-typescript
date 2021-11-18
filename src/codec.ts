@@ -134,6 +134,7 @@ const encodeMessage: (message: Message, uuid: string) => MessageT = (
     message.parameter,
     uuid,
     message.worldName,
+    message.replication,
     records,
     entities,
     (message.position && encodeVector3(message.position)) ?? undefined,
@@ -145,10 +146,6 @@ const encodeMessage: (message: Message, uuid: string) => MessageT = (
 
 const decodeMessage: (messageT: MessageT) => Readonly<IncomingMessage> =
   messageT => {
-    if (messageT.instruction === null) {
-      throw new TypeError('message instruction should never be null')
-    }
-
     if (messageT.worldName === null) {
       throw new TypeError('message world_name should never be null')
     }
@@ -162,6 +159,7 @@ const decodeMessage: (messageT: MessageT) => Readonly<IncomingMessage> =
       parameter:
         (messageT.parameter && decodeString(messageT.parameter)) ?? undefined,
       worldName: decodeString(messageT.worldName),
+      replication: messageT.replication,
       senderUuid: decodeString(messageT.senderUuid),
       records: messageT.records.map(x => decodeRecord(x)),
       entities: messageT.entities.map(x => decodeEntity(x)),
