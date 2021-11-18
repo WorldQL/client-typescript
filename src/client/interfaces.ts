@@ -2,16 +2,16 @@ import type { IncomingMessage, Message, Vector3 } from '../interfaces.js'
 
 // #region Events
 // eslint-disable-next-line @typescript-eslint/ban-types
-type NoArgs = readonly []
+type NoArgs = []
 
-type LocalMessageEventArgs = readonly [
+type LocalMessageEventArgs = [
   senderUuid: string,
   worldName: string,
   position: Readonly<Vector3>,
   payload: Readonly<MessagePayload>
 ]
 
-type GlobalMessageEventArgs = readonly [
+type GlobalMessageEventArgs = [
   senderUuid: string,
   worldName: string,
   payload: Readonly<MessagePayload>
@@ -20,11 +20,11 @@ type GlobalMessageEventArgs = readonly [
 export interface ClientEvents {
   ready: NoArgs
   disconnect: NoArgs
-  error: readonly [Error]
-  rawMessage: readonly [Readonly<IncomingMessage>]
+  error: [Error]
+  rawMessage: [Readonly<IncomingMessage>]
 
-  peerConnect: readonly [uuid: string]
-  peerDisconnect: readonly [uuid: string]
+  peerConnect: [uuid: string]
+  peerDisconnect: [uuid: string]
   localMessage: LocalMessageEventArgs
   globalMessage: GlobalMessageEventArgs
   recordReply: NoArgs
