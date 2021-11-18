@@ -34,4 +34,6 @@ export interface ClientEvents {
 export interface MessagePayload {
   parameter?: Message['parameter']
   flex?: Message['flex']
+  records?: Message['records']
+  entities?: Message['entities']
 }

@@ -125,6 +125,8 @@ export class Client extends EventEmitter<Events> {
       worldName,
       parameter: payload?.parameter,
       flex: payload?.flex,
+      records: payload?.records,
+      entities: payload?.entities,
     })
   }
 
@@ -145,6 +147,8 @@ export class Client extends EventEmitter<Events> {
       position,
       parameter: payload?.parameter,
       flex: payload?.flex,
+      records: payload?.records,
+      entities: payload?.entities,
     })
   }
 
@@ -246,6 +250,8 @@ export class Client extends EventEmitter<Events> {
           {
             parameter: message.parameter,
             flex: message.flex,
+            records: message.records,
+            entities: message.entities,
           }
         )
 
@@ -256,6 +262,8 @@ export class Client extends EventEmitter<Events> {
         this.emit('globalMessage', message.senderUuid, message.worldName, {
           parameter: message.parameter,
           flex: message.flex,
+          records: message.records,
+          entities: message.entities,
         })
 
         break
