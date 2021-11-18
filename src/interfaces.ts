@@ -1,4 +1,4 @@
-import { Instruction } from './worldql-fb/index.js'
+import { Instruction, Replication } from './worldql-fb/index.js'
 
 export interface Vector3 {
   x: number
@@ -26,6 +26,7 @@ export interface Message {
   instruction: Instruction
   parameter?: string
   worldName: string
+  replication: Replication
   records?: Record[]
   entities?: Entity[]
   position?: Vector3

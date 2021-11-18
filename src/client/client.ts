@@ -2,9 +2,11 @@ import EventEmitter from 'eventemitter3'
 import WebSocket from 'isomorphic-ws'
 import type { MessageEvent } from 'isomorphic-ws'
 import type { Buffer } from 'node:buffer'
+import type { SetOptional } from 'type-fest'
 import { deserializeMessage, serializeMessage } from '../codec.js'
 import { Instruction } from '../index.js'
 import type { Message, Vector3 } from '../interfaces.js'
+import { Replication } from '../worldql-fb/index.js'
 import type { ClientEvents as Events, MessagePayload } from './interfaces.js'
 
 export interface ClientOptions {
@@ -100,7 +102,9 @@ export class Client extends EventEmitter<Events> {
   }
   // #endregion
 
-  public sendRawMessage(message: Readonly<Message>): void {
+  public sendRawMessage(
+    message: Readonly<SetOptional<Message, 'replication'>>
+  ): void {
     if (!this.connected) {
       throw new Error('cannot send messages before client is connected')
     }
@@ -109,7 +113,12 @@ export class Client extends EventEmitter<Events> {
       throw new Error('cannot send messages before client is ready')
     }
 
-    const data = serializeMessage(message, this._uuid!)
+    const messageWithDefaults: Readonly<Message> = {
+      replication: Replication.ExceptSelf,
+      ...message,
+    }
+
+    const data = serializeMessage(messageWithDefaults, this._uuid!)
     this._ws!.send(data)
   }
 
