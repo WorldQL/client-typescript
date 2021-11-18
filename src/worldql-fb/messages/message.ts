@@ -5,6 +5,7 @@ import * as flatbuffers from 'flatbuffers';
 import { Entity, EntityT } from '../../worldql-fb/messages/entity.js';
 import { Instruction } from '../../worldql-fb/messages/instruction.js';
 import { Record, RecordT } from '../../worldql-fb/messages/record.js';
+import { Replication } from '../../worldql-fb/messages/replication.js';
 import { Vec3d, Vec3dT } from '../../worldql-fb/messages/vec3d.js';
 
 
@@ -52,48 +53,53 @@ worldName(optionalEncoding?:any):string|Uint8Array|null {
   return offset ? this.bb!.__string(this.bb_pos + offset, optionalEncoding) : null;
 }
 
-records(index: number, obj?:Record):Record|null {
+replication():Replication {
   const offset = this.bb!.__offset(this.bb_pos, 12);
+  return offset ? this.bb!.readUint8(this.bb_pos + offset) : Replication.ExceptSelf;
+}
+
+records(index: number, obj?:Record):Record|null {
+  const offset = this.bb!.__offset(this.bb_pos, 14);
   return offset ? (obj || new Record()).__init(this.bb!.__indirect(this.bb!.__vector(this.bb_pos + offset) + index * 4), this.bb!) : null;
 }
 
 recordsLength():number {
-  const offset = this.bb!.__offset(this.bb_pos, 12);
+  const offset = this.bb!.__offset(this.bb_pos, 14);
   return offset ? this.bb!.__vector_len(this.bb_pos + offset) : 0;
 }
 
 entities(index: number, obj?:Entity):Entity|null {
-  const offset = this.bb!.__offset(this.bb_pos, 14);
+  const offset = this.bb!.__offset(this.bb_pos, 16);
   return offset ? (obj || new Entity()).__init(this.bb!.__indirect(this.bb!.__vector(this.bb_pos + offset) + index * 4), this.bb!) : null;
 }
 
 entitiesLength():number {
-  const offset = this.bb!.__offset(this.bb_pos, 14);
+  const offset = this.bb!.__offset(this.bb_pos, 16);
   return offset ? this.bb!.__vector_len(this.bb_pos + offset) : 0;
 }
 
 position(obj?:Vec3d):Vec3d|null {
-  const offset = this.bb!.__offset(this.bb_pos, 16);
+  const offset = this.bb!.__offset(this.bb_pos, 18);
   return offset ? (obj || new Vec3d()).__init(this.bb_pos + offset, this.bb!) : null;
 }
 
 flex(index: number):number|null {
-  const offset = this.bb!.__offset(this.bb_pos, 18);
+  const offset = this.bb!.__offset(this.bb_pos, 20);
   return offset ? this.bb!.readUint8(this.bb!.__vector(this.bb_pos + offset) + index) : 0;
 }
 
 flexLength():number {
-  const offset = this.bb!.__offset(this.bb_pos, 18);
+  const offset = this.bb!.__offset(this.bb_pos, 20);
   return offset ? this.bb!.__vector_len(this.bb_pos + offset) : 0;
 }
 
 flexArray():Uint8Array|null {
-  const offset = this.bb!.__offset(this.bb_pos, 18);
+  const offset = this.bb!.__offset(this.bb_pos, 20);
   return offset ? new Uint8Array(this.bb!.bytes().buffer, this.bb!.bytes().byteOffset + this.bb!.__vector(this.bb_pos + offset), this.bb!.__vector_len(this.bb_pos + offset)) : null;
 }
 
 static startMessage(builder:flatbuffers.Builder) {
-  builder.startObject(8);
+  builder.startObject(9);
 }
 
 static addInstruction(builder:flatbuffers.Builder, instruction:Instruction) {
@@ -112,8 +118,12 @@ static addWorldName(builder:flatbuffers.Builder, worldNameOffset:flatbuffers.Off
   builder.addFieldOffset(3, worldNameOffset, 0);
 }
 
+static addReplication(builder:flatbuffers.Builder, replication:Replication) {
+  builder.addFieldInt8(4, replication, Replication.ExceptSelf);
+}
+
 static addRecords(builder:flatbuffers.Builder, recordsOffset:flatbuffers.Offset) {
-  builder.addFieldOffset(4, recordsOffset, 0);
+  builder.addFieldOffset(5, recordsOffset, 0);
 }
 
 static createRecordsVector(builder:flatbuffers.Builder, data:flatbuffers.Offset[]):flatbuffers.Offset {
@@ -129,7 +139,7 @@ static startRecordsVector(builder:flatbuffers.Builder, numElems:number) {
 }
 
 static addEntities(builder:flatbuffers.Builder, entitiesOffset:flatbuffers.Offset) {
-  builder.addFieldOffset(5, entitiesOffset, 0);
+  builder.addFieldOffset(6, entitiesOffset, 0);
 }
 
 static createEntitiesVector(builder:flatbuffers.Builder, data:flatbuffers.Offset[]):flatbuffers.Offset {
@@ -145,11 +155,11 @@ static startEntitiesVector(builder:flatbuffers.Builder, numElems:number) {
 }
 
 static addPosition(builder:flatbuffers.Builder, positionOffset:flatbuffers.Offset) {
-  builder.addFieldStruct(6, positionOffset, 0);
+  builder.addFieldStruct(7, positionOffset, 0);
 }
 
 static addFlex(builder:flatbuffers.Builder, flexOffset:flatbuffers.Offset) {
-  builder.addFieldOffset(7, flexOffset, 0);
+  builder.addFieldOffset(8, flexOffset, 0);
 }
 
 static createFlexVector(builder:flatbuffers.Builder, data:number[]|Uint8Array):flatbuffers.Offset {
@@ -184,6 +194,7 @@ unpack(): MessageT {
     this.parameter(),
     this.senderUuid(),
     this.worldName(),
+    this.replication(),
     this.bb!.createObjList(this.records.bind(this), this.recordsLength()),
     this.bb!.createObjList(this.entities.bind(this), this.entitiesLength()),
     (this.position() !== null ? this.position()!.unpack() : null),
@@ -197,6 +208,7 @@ unpackTo(_o: MessageT): void {
   _o.parameter = this.parameter();
   _o.senderUuid = this.senderUuid();
   _o.worldName = this.worldName();
+  _o.replication = this.replication();
   _o.records = this.bb!.createObjList(this.records.bind(this), this.recordsLength());
   _o.entities = this.bb!.createObjList(this.entities.bind(this), this.entitiesLength());
   _o.position = (this.position() !== null ? this.position()!.unpack() : null);
@@ -210,6 +222,7 @@ constructor(
   public parameter: string|Uint8Array|null = null,
   public senderUuid: string|Uint8Array|null = null,
   public worldName: string|Uint8Array|null = null,
+  public replication: Replication = Replication.ExceptSelf,
   public records: (RecordT)[] = [],
   public entities: (EntityT)[] = [],
   public position: Vec3dT|null = null,
@@ -230,6 +243,7 @@ pack(builder:flatbuffers.Builder): flatbuffers.Offset {
   Message.addParameter(builder, parameter);
   Message.addSenderUuid(builder, senderUuid);
   Message.addWorldName(builder, worldName);
+  Message.addReplication(builder, this.replication);
   Message.addRecords(builder, records);
   Message.addEntities(builder, entities);
   Message.addPosition(builder, (this.position !== null ? this.position!.pack(builder) : 0));
