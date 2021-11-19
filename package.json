@@ -1,6 +1,7 @@
 {
   "name": "@worldql/client",
   "version": "0.0.6",
+  "description": "TypeScript Client for interacting with WorldQL over WebSockets",
   "type": "module",
   "exports": {
     ".": {
@@ -16,6 +17,14 @@
   "engines": {
     "node": "^12.20.0 || ^14.13.1 || >=16.0.0"
   },
+  "keywords": [
+    "worldql",
+    "typescript",
+    "client",
+    "websockets",
+    "message broker",
+    "spatial database"
+  ],
   "scripts": {
     "prepublishOnly": "yarn run test && yarn run build",
     "test": "yarn run check && yarn run lint",
