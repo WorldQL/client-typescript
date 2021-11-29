@@ -6,6 +6,9 @@ export interface Vector3 {
   z: number
 }
 
+export type Vector3Tuple = [x: number, y: number, z: number]
+export type Vector3Arg = Vector3 | Vector3Tuple
+
 export interface Record {
   uuid: string
   position: Vector3
@@ -29,10 +32,11 @@ export interface Message {
   replication: Replication
   records?: Record[]
   entities?: Entity[]
-  position?: Vector3
+  position?: Vector3Arg
   flex?: Uint8Array
 }
 
 export interface IncomingMessage extends Message {
   senderUuid: string
+  position?: Vector3
 }

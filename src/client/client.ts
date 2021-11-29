@@ -5,7 +5,7 @@ import type { Buffer } from 'node:buffer'
 import type { SetOptional } from 'type-fest'
 import { deserializeMessage, serializeMessage } from '../codec.js'
 import { Instruction } from '../index.js'
-import type { Message, Vector3 } from '../interfaces.js'
+import type { Message, Vector3Arg } from '../interfaces.js'
 import { Replication } from '../worldql-fb/index.js'
 import type { ClientEvents as Events, MessagePayload } from './interfaces.js'
 
@@ -154,7 +154,7 @@ export class Client extends EventEmitter<Events> {
    */
   public localMessage(
     worldName: string,
-    position: Readonly<Vector3>,
+    position: Vector3Arg,
     replication = Replication.ExceptSelf,
     payload?: Readonly<MessagePayload>
   ): void {
@@ -196,7 +196,7 @@ export class Client extends EventEmitter<Events> {
    * @param worldName World Name
    * @param position Area Position
    */
-  public areaSubscribe(worldName: string, position: Readonly<Vector3>): void {
+  public areaSubscribe(worldName: string, position: Vector3Arg): void {
     this.sendRawMessage({
       instruction: Instruction.AreaSubscribe,
       worldName,
@@ -209,7 +209,7 @@ export class Client extends EventEmitter<Events> {
    * @param worldName World Name
    * @param position Area Position
    */
-  public areaUnsubscribe(worldName: string, position: Readonly<Vector3>): void {
+  public areaUnsubscribe(worldName: string, position: Vector3Arg): void {
     this.sendRawMessage({
       instruction: Instruction.AreaUnsubscribe,
       worldName,

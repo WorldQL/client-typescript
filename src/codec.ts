@@ -5,6 +5,7 @@ import type {
   Message,
   Record,
   Vector3,
+  Vector3Arg,
 } from './interfaces.js'
 import {
   EntityT,
@@ -34,7 +35,13 @@ const decodeFlex: (flex: number[]) => Uint8Array = flex => {
 // #endregion
 
 // #region Vector3
-const encodeVector3: (vec: Vector3) => Vec3dT = vec => {
+const encodeVector3: (vec: Vector3Arg) => Vec3dT = vec => {
+  // Handle tuples
+  if (Array.isArray(vec)) {
+    const [x, y, z] = vec
+    return new Vec3dT(x, y, z)
+  }
+
   return new Vec3dT(vec.x, vec.y, vec.z)
 }
 
