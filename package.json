@@ -1,6 +1,6 @@
 {
   "name": "@worldql/client",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "description": "TypeScript Client for interacting with WorldQL over WebSockets",
   "type": "module",
   "exports": {
