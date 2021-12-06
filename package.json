@@ -36,7 +36,7 @@
     "build": "yarn run clean && yarn run compile",
     "dev": "yarn run clean && yarn run compile --watch"
   },
-  "license": "UNLICENSED",
+  "license": "MIT",
   "devDependencies": {
     "@types/node": "^16.11.11",
     "@types/uuid": "^8.3.3",
