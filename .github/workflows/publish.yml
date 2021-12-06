@@ -19,11 +19,13 @@ jobs:
           cache: yarn
           node-version: ${{ matrix.node-version }}
           registry-url: https://registry.npmjs.org
+      - name: Upgrade Yarn
+        run: yarn set version stable
       - name: Install packages
-        run: yarn install --frozen-lockfile
+        run: yarn install --immutable
       - name: Version
-        run: yarn version --new-version "${GITHUB_REF:11}" --no-git-tag-version
+        run: yarn version -i "${GITHUB_REF:11}"
       - name: Publish to NPM
-        run: yarn publish --access public
+        run: yarn npm publish --access public
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

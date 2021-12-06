@@ -18,7 +18,9 @@ jobs:
           cache: yarn
           node-version: ${{ matrix.node-version }}
           registry-url: https://registry.npmjs.org
+      - name: Upgrade Yarn
+        run: yarn set version stable
       - name: Install packages
-        run: yarn install --frozen-lockfile
+        run: yarn install --immutable
       - name: Test
         run: yarn run test
