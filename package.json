@@ -38,18 +38,18 @@
   },
   "license": "UNLICENSED",
   "devDependencies": {
-    "@types/node": "^16.11.7",
+    "@types/node": "^16.11.11",
     "@types/uuid": "^8.3.3",
-    "@types/ws": "^8.2.0",
+    "@types/ws": "^8.2.1",
     "rimraf": "^3.0.2",
-    "type-fest": "^2.5.4",
+    "type-fest": "^2.8.0",
     "typescript": "^4.5.2",
-    "xo": "^0.46.4"
+    "xo": "^0.47.0"
   },
   "dependencies": {
     "eventemitter3": "^4.0.7",
     "flatbuffers": "^2.0.4",
     "isomorphic-ws": "^4.0.1",
-    "ws": "^8.2.3"
+    "ws": "^8.3.0"
   }
 }
