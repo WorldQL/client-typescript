@@ -25,8 +25,8 @@ type GlobalMessageEventArgs = [
 export interface ClientEvents {
   ready: NoArgs
   disconnect: NoArgs
-  error: [Error]
-  rawMessage: [Readonly<IncomingMessage>]
+  error: [error: Error]
+  rawMessage: [message: Readonly<IncomingMessage>]
 
   peerConnect: [uuid: string]
   peerDisconnect: [uuid: string]
