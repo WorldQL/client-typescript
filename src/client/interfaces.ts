@@ -1,4 +1,9 @@
-import type { IncomingMessage, Message, Vector3 } from '../interfaces.js'
+import type {
+  IncomingMessage,
+  Message,
+  Record,
+  Vector3,
+} from '../interfaces.js'
 
 // #region Events
 // eslint-disable-next-line @typescript-eslint/ban-types
@@ -27,7 +32,7 @@ export interface ClientEvents {
   peerDisconnect: [uuid: string]
   localMessage: LocalMessageEventArgs
   globalMessage: GlobalMessageEventArgs
-  recordReply: NoArgs
+  recordReply: [worldName: string, records: ReadonlyArray<Readonly<Record>>]
 }
 // #endregion
 

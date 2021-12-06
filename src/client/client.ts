@@ -5,7 +5,7 @@ import type { Buffer } from 'node:buffer'
 import type { SetOptional } from 'type-fest'
 import { deserializeMessage, serializeMessage } from '../codec.js'
 import { Instruction } from '../index.js'
-import type { Message, Vector3Arg } from '../interfaces.js'
+import type { Message, Record, Vector3Arg } from '../interfaces.js'
 import { Replication } from '../worldql-fb/index.js'
 import type { ClientEvents as Events, MessagePayload } from './interfaces.js'
 
@@ -170,26 +170,35 @@ export class Client extends EventEmitter<Events> {
     })
   }
 
+  public recordCreate(worldName: string, records: Iterable<Record>): void {
+    this.sendRawMessage({
+      instruction: Instruction.RecordCreate,
+      worldName,
+      records: [...records],
+    })
+  }
+
+  public recordRead(worldName: string, position: Vector3Arg): void {
+    this.sendRawMessage({
+      instruction: Instruction.RecordRead,
+      worldName,
+      position,
+    })
+  }
+
   // TODO: disable for now, suppress lint errors
-  // public recordCreate(worldName: string): void {
-  //   // TODO
-  //   throw new Error('not implemented')
-  // }
-
-  // public recordRead(worldName: string): void {
-  //   // TODO
-  //   throw new Error('not implemented')
-  // }
-
   // public recordUpdate(worldName: string): void {
   //   // TODO
   //   throw new Error('not implemented')
   // }
 
-  // public recordDelete(worldName: string): void {
-  //   // TODO
-  //   throw new Error('not implemented')
-  // }
+  public recordDelete(worldName: string, records: Iterable<Record>): void {
+    this.sendRawMessage({
+      instruction: Instruction.RecordDelete,
+      worldName,
+      records: [...records],
+    })
+  }
 
   /**
    * Subscribe to local messages for an area.
@@ -293,7 +302,12 @@ export class Client extends EventEmitter<Events> {
       }
 
       case Instruction.RecordReply: {
-        // TODO
+        const records = message.records ?? []
+        for (const record of records) {
+          Object.freeze(record)
+        }
+
+        this.emit('recordReply', message.worldName, Object.freeze(records))
         break
       }
 
