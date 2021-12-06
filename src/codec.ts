@@ -151,45 +151,48 @@ const encodeMessage: (message: Message, uuid: string) => MessageT = (
   return messageT
 }
 
-const decodeMessage: (messageT: MessageT) => Readonly<IncomingMessage> =
-  messageT => {
-    if (messageT.worldName === null) {
-      throw new TypeError('message world_name should never be null')
-    }
-
-    if (messageT.senderUuid === null) {
-      throw new TypeError('message sender_uuid should never be null')
-    }
-
-    const message: IncomingMessage = {
-      instruction: messageT.instruction,
-      parameter:
-        (messageT.parameter && decodeString(messageT.parameter)) ?? undefined,
-      worldName: decodeString(messageT.worldName),
-      replication: messageT.replication,
-      senderUuid: decodeString(messageT.senderUuid),
-      records: messageT.records.map(x => decodeRecord(x)),
-      entities: messageT.entities.map(x => decodeEntity(x)),
-      position:
-        (messageT.position && decodeVector3(messageT.position)) ?? undefined,
-      flex: (messageT.flex && decodeFlex(messageT.flex)) ?? undefined,
-    }
-
-    return Object.freeze(message)
+const decodeMessage: (
+  messageT: MessageT
+) => Readonly<IncomingMessage> = messageT => {
+  if (messageT.worldName === null) {
+    throw new TypeError('message world_name should never be null')
   }
+
+  if (messageT.senderUuid === null) {
+    throw new TypeError('message sender_uuid should never be null')
+  }
+
+  const message: IncomingMessage = {
+    instruction: messageT.instruction,
+    parameter:
+      (messageT.parameter && decodeString(messageT.parameter)) ?? undefined,
+    worldName: decodeString(messageT.worldName),
+    replication: messageT.replication,
+    senderUuid: decodeString(messageT.senderUuid),
+    records: messageT.records.map(x => decodeRecord(x)),
+    entities: messageT.entities.map(x => decodeEntity(x)),
+    position:
+      (messageT.position && decodeVector3(messageT.position)) ?? undefined,
+    flex: (messageT.flex && decodeFlex(messageT.flex)) ?? undefined,
+  }
+
+  return Object.freeze(message)
+}
 // #endregion
 
 // #region (De)serialization
-export const serializeMessage: (message: Message, uuid: string) => Uint8Array =
-  (message, uuid) => {
-    const messageT = encodeMessage(message, uuid)
+export const serializeMessage: (
+  message: Message,
+  uuid: string
+) => Uint8Array = (message, uuid) => {
+  const messageT = encodeMessage(message, uuid)
 
-    const builder = new Builder(1024)
-    const offset = messageT.pack(builder)
+  const builder = new Builder(1024)
+  const offset = messageT.pack(builder)
 
-    builder.finish(offset)
-    return builder.asUint8Array()
-  }
+  builder.finish(offset)
+  return builder.asUint8Array()
+}
 
 export const deserializeMessage: (
   bytes: ArrayBuffer | Uint8Array
