@@ -3,29 +3,25 @@ on:
   release:
     types: [published]
 
+env:
+  NODE_VERSION: 16.x
+
 jobs:
   publish:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        node-version: [16.x]
-
     steps:
       - name: Checkout
         uses: actions/checkout@v2
-      - name: Use Node.js ${{ matrix.node-version }}
+      - name: Setup Node.js
         uses: actions/setup-node@v2
         with:
           cache: yarn
-          node-version: ${{ matrix.node-version }}
-          registry-url: https://registry.npmjs.org
+          node-version: ${{ env.NODE_VERSION }}
       - name: Upgrade Yarn
         run: yarn set version stable
       - name: Install packages
         run: yarn install --immutable
-      - name: Version
-        run: yarn version -i "${GITHUB_REF:11}"
       - name: Publish to NPM
-        run: yarn npm publish --access public
+        run: yarn npm publish
         env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          YARN_NPM_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
