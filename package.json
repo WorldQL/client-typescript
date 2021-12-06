@@ -26,16 +26,15 @@
     "spatial database"
   ],
   "scripts": {
-    "prepublishOnly": "yarn run test && yarn run build",
+    "prepack": "yarn run build",
+    "prepublish": "yarn run test",
     "test": "yarn run check && yarn run lint",
     "check": "yarn run compile --noEmit",
     "lint": "xo ./src",
     "clean": "rimraf lib",
     "compile": "tsc",
-    "prebuild": "yarn run clean",
-    "build": "yarn run compile",
-    "predev": "yarn run clean",
-    "dev": "yarn run compile --watch"
+    "build": "yarn run clean && yarn run compile",
+    "dev": "yarn run clean && yarn run compile --watch"
   },
   "license": "UNLICENSED",
   "devDependencies": {
