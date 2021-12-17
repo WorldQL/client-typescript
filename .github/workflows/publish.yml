@@ -17,8 +17,6 @@ jobs:
         with:
           cache: yarn
           node-version: ${{ env.NODE_VERSION }}
-      - name: Upgrade Yarn
-        run: yarn set version stable
       - name: Install packages
         run: yarn install --immutable
       - name: Publish to NPM
