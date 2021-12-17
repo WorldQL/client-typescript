@@ -7,13 +7,17 @@
   "exports": {
     ".": {
       "import": "./lib/index.js",
-      "types": "./lib/index.d.ts"
+      "types": "./lib/index.d.ts",
+      "require": "./cjs/index.js"
     }
   },
+  "main": "./cjs/index.js",
+  "module": "./lib/index.js",
   "types": "./lib/index.d.ts",
   "sideEffects": false,
   "files": [
-    "lib/**/*"
+    "lib/**/*",
+    "cjs/**/*"
   ],
   "engines": {
     "node": "^12.20.0 || ^14.13.1 || >=16.0.0"
@@ -30,12 +34,17 @@
     "prepack": "yarn run build",
     "prepublish": "yarn run test",
     "test": "yarn run check && yarn run lint",
-    "check": "yarn run compile --noEmit",
+    "check": "yarn run compile:esm --noEmit",
     "lint": "xo ./src",
-    "clean": "rimraf lib",
-    "compile": "tsc",
-    "build": "yarn run clean && yarn run compile",
-    "dev": "yarn run clean && yarn run compile --watch"
+    "clean:esm": "rimraf lib",
+    "clean:cjs": "rimraf cjs",
+    "clean": "yarn run clean:esm && yarn run clean:cjs",
+    "compile:esm": "tsc",
+    "compile:cjs": "tsc --outDir cjs --module commonjs",
+    "build:esm": "yarn run clean:esm && yarn run compile:esm",
+    "build:cjs": "yarn run clean:cjs && yarn run compile:cjs",
+    "build": "yarn run build:esm && yarn run build:cjs",
+    "dev": "yarn run clean:esm && yarn run compile:esm --watch"
   },
   "license": "MIT",
   "devDependencies": {

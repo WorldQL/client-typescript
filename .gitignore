@@ -51,4 +51,4 @@ docs
 
 # Compiled TypeScript
 lib/
-esm/
+cjs/
