@@ -48,8 +48,8 @@ const encodeVector3: (vec: Vector3Arg) => Vec3dT = vec => {
 const decodeVector3: (vec3dT: Vec3dT) => Readonly<Vector3> = vec3dT => {
   const vec: Vector3 = {
     x: vec3dT.x,
-    y: vec3dT.x,
-    z: vec3dT.x,
+    y: vec3dT.y,
+    z: vec3dT.z,
   }
 
   return Object.freeze(vec)
