@@ -303,6 +303,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@msgpack/msgpack@npm:^2.7.1":
+  version: 2.7.1
+  resolution: "@msgpack/msgpack@npm:2.7.1"
+  checksum: 29b4eb42aa8b300944165e1fe88c022662680b77905c108dcadba8350cc3496d56fb4de4e009d9660e7e84d5e35d206b3b829293f7d0d5944a48be60ee0ab278
+  languageName: node
+  linkType: hard
+
 "@nodelib/fs.scandir@npm:2.1.5":
   version: 2.1.5
   resolution: "@nodelib/fs.scandir@npm:2.1.5"
@@ -509,11 +516,11 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@worldql/client@workspace:."
   dependencies:
+    "@msgpack/msgpack": ^2.7.1
     "@types/node": ^16.11.11
     "@types/uuid": ^8.3.3
     "@types/ws": ^8.2.1
     eventemitter3: ^4.0.7
-    flatbuffers: ^2.0.4
     isomorphic-ws: ^4.0.1
     rimraf: ^3.0.2
     type-fest: ^2.8.0
@@ -1680,13 +1687,6 @@ __metadata:
     flatted: ^3.1.0
     rimraf: ^3.0.2
   checksum: 4fdd10ecbcbf7d520f9040dd1340eb5dfe951e6f0ecf2252edeec03ee68d989ec8b9a20f4434270e71bcfd57800dc09b3344fca3966b2eb8f613072c7d9a2365
-  languageName: node
-  linkType: hard
-
-"flatbuffers@npm:^2.0.4":
-  version: 2.0.4
-  resolution: "flatbuffers@npm:2.0.4"
-  checksum: e51ae9a19f18a771b3188afd66c607e2d2640739f8f1a50fd23527acf0c6b98e20347756c3eb022483b1125e12abdf60c097746753c01abeb921855f03271b80
   languageName: node
   linkType: hard
 
