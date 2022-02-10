@@ -28,7 +28,7 @@ interface ClientMessageReplyCommon {
 
 export interface HandshakeReply extends ClientMessageReplyCommon {
   reply: 'handshake'
-  // TODO
+  auth_token: string
 }
 
 export interface HeartbeatReply extends ClientMessageReplyCommon {
