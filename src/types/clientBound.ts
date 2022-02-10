@@ -126,7 +126,7 @@ export interface GlobalMessageEvent extends ClientMessageEventCommon {
   event: 'global_message'
   sender: Uuid
   world_name: string
-  // TODO: add data field
+  data: Uint8Array
 }
 
 export interface LocalMessageEvent extends ClientMessageEventCommon {
@@ -134,6 +134,6 @@ export interface LocalMessageEvent extends ClientMessageEventCommon {
   sender: Uuid
   world_name: string
   position: Vector3
-  // TODO: add data field
+  data: Uint8Array
 }
 // #endregion

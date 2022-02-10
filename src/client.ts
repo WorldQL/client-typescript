@@ -45,12 +45,12 @@ interface ClientEvents {
 
   peerConnect: [uuid: string]
   peerDisconnect: [uuid: string]
-  globalMessage: [sender: string, world: string, data: unknown] // TODO: properly type data
+  globalMessage: [sender: string, world: string, data: Uint8Array]
   localMessage: [
     sender: string,
     world: string,
     position: Vector3,
-    data: unknown // TODO: properly type data
+    data: Uint8Array
   ]
 }
 // #endregion
@@ -223,25 +223,23 @@ export class Client extends EventEmitter<ClientEvents> {
       }
 
       case 'global_message': {
-        // TODO: Add data field
         this.emit(
           'globalMessage',
           uuidString(message.sender),
           message.world_name,
-          undefined
+          message.data
         )
 
         break
       }
 
       case 'local_message': {
-        // TODO: Add data field
         this.emit(
           'localMessage',
           uuidString(message.sender),
           message.world_name,
           message.position,
-          undefined
+          message.data
         )
 
         break
