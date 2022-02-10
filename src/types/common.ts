@@ -1,4 +1,4 @@
-export type Uuid = ArrayLike<number>
+export { type Uuid } from '../utils/uuid.js'
 
 export type Vector3 = readonly [x: number, y: number, z: number]
 
