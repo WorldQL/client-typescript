@@ -5,7 +5,9 @@ export interface Error {
   message: string
 }
 
-export type Status<T> = ({ status: 'ok' } & T) | ({ status: 'error' } & Error)
+export type Status<T extends { reply: string }> =
+  | ({ status: 'ok' } & T)
+  | ({ status: 'error' } & Error & ClientMessageReplyCommon & Pick<T, 'reply'>)
 
 // #region Reply
 export type ClientMessageReply =
