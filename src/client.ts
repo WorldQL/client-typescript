@@ -90,8 +90,24 @@ export class Client extends EventEmitter<ClientEvents> {
   }
 
   // #region Public Properties
+  /**
+   * Whether or not the connection has been established and the handshake completed
+   */
   public get connected(): boolean {
     return this._connection !== undefined && isFullyConnected(this._connection)
+  }
+
+  /**
+   * The Client's current UUID
+   *
+   * Throws an error if read before the client is ready
+   */
+  public get uuid(): string {
+    if (this._connection === undefined) {
+      throw new Error('cannot read UUID before the client is ready')
+    }
+
+    return uuidString(this._connection.uuid)
   }
   // #endregion
 
