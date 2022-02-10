@@ -41,6 +41,7 @@ type NoArgs = []
 interface ClientEvents {
   ready: NoArgs
   error: [error: Error]
+  disconnect: [reason: string]
 
   peerConnect: [uuid: string]
   peerDisconnect: [uuid: string]
@@ -186,7 +187,12 @@ export class Client extends EventEmitter<ClientEvents> {
 
     switch (message.event) {
       case 'system_message': {
-        // TODO
+        if (message.message === 'disconnect') {
+          this.emit('disconnect', message.reason)
+        } else if (message.message === 'unknown_error') {
+          // TODO
+        }
+
         break
       }
 
