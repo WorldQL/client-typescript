@@ -91,10 +91,26 @@ interface ClientMessageEventCommon {
   type: 'event'
 }
 
-export interface SystemMessageEvent extends ClientMessageEventCommon {
+// #region System Message
+interface SystemMessageEventCommon extends ClientMessageEventCommon {
   event: 'system_message'
+}
+
+export interface SystemMessageEventUnknownError
+  extends SystemMessageEventCommon {
+  message: 'unknown_error'
   // TODO
 }
+
+export interface SystemMessageEventDisconnect extends SystemMessageEventCommon {
+  message: 'disconnect'
+  reason: string
+}
+
+export type SystemMessageEvent =
+  | SystemMessageEventUnknownError
+  | SystemMessageEventDisconnect
+// #endregion
 
 export interface PeerConnectEvent extends ClientMessageEventCommon {
   event: 'peer_connect'
