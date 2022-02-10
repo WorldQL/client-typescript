@@ -1,3 +1,5 @@
+import { type Uuid, type Vector3 } from './common.js'
+
 export type ClientMessage = ClientMessageReply | ClientMessageEvent
 
 export interface Error {
@@ -96,21 +98,26 @@ export interface SystemMessageEvent extends ClientMessageEventCommon {
 
 export interface PeerConnectEvent extends ClientMessageEventCommon {
   event: 'peer_connect'
-  // TODO
+  uuid: Uuid
 }
 
 export interface PeerDisconnectEvent extends ClientMessageEventCommon {
   event: 'peer_disconnect'
-  // TODO
+  uuid: Uuid
 }
 
 export interface GlobalMessageEvent extends ClientMessageEventCommon {
   event: 'global_message'
-  // TODO
+  sender: Uuid
+  world_name: string
+  // TODO: add data field
 }
 
 export interface LocalMessageEvent extends ClientMessageEventCommon {
   event: 'local_message'
-  // TODO
+  sender: Uuid
+  world_name: string
+  position: Vector3
+  // TODO: add data field
 }
 // #endregion

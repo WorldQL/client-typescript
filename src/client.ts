@@ -6,13 +6,13 @@ import {
   type ClientMessageEvent,
   type ClientMessageReply,
 } from './types/clientBound.js'
-import { type Uuid } from './types/common.js'
+import { type Uuid, type Vector3 } from './types/common.js'
 import {
   type HandshakeRequest,
   type ServerMessage,
 } from './types/serverBound.js'
 import { decode, encode } from './utils/msgpack.js'
-import { generateUuid } from './utils/uuid.js'
+import { generateUuid, uuidString } from './utils/uuid.js'
 
 export interface ClientOptions {
   /**
@@ -40,6 +40,16 @@ type NoArgs = []
 interface ClientEvents {
   ready: NoArgs
   error: [error: Error]
+
+  peerConnect: [uuid: string]
+  peerDisconnect: [uuid: string]
+  globalMessage: [sender: string, world: string, data: unknown] // TODO: properly type data
+  localMessage: [
+    sender: string,
+    world: string,
+    position: Vector3,
+    data: unknown // TODO: properly type data
+  ]
 }
 // #endregion
 
@@ -173,7 +183,53 @@ export class Client extends EventEmitter<ClientEvents> {
       throw new Error('_handleEvent called with no connection')
     }
 
-    // TODO
+    switch (message.event) {
+      case 'system_message': {
+        // TODO
+        break
+      }
+
+      case 'peer_connect': {
+        this.emit('peerConnect', uuidString(message.uuid))
+        break
+      }
+
+      case 'peer_disconnect': {
+        this.emit('peerDisconnect', uuidString(message.uuid))
+        break
+      }
+
+      case 'global_message': {
+        // TODO: Add data field
+        this.emit(
+          'globalMessage',
+          uuidString(message.sender),
+          message.world_name,
+          undefined
+        )
+
+        break
+      }
+
+      case 'local_message': {
+        // TODO: Add data field
+        this.emit(
+          'localMessage',
+          uuidString(message.sender),
+          message.world_name,
+          message.position,
+          undefined
+        )
+
+        break
+      }
+
+      default:
+        console.warn('unhandled event type')
+        console.log(message)
+
+        break
+    }
   }
 
   private _handleReply(message: ClientMessageReply): void {
