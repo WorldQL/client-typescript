@@ -35,7 +35,6 @@ export interface GlobalMessageRequest {
   world_name: string
   replication: Replication
   data: Uint8Array
-  ack: boolean
 }
 
 export interface LocalMessageRequest {
@@ -44,7 +43,6 @@ export interface LocalMessageRequest {
   position: Vector3
   replication: Replication
   data: Uint8Array
-  ack: boolean
 }
 
 export interface WorldSubscribe {
