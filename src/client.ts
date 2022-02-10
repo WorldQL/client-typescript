@@ -1,6 +1,7 @@
 import EventEmitter from 'eventemitter3'
 import WebSocket from 'isomorphic-ws'
 import { type Buffer } from 'node:buffer'
+import { ClientError } from './error.js'
 import {
   type ClientMessage,
   type ClientMessageEvent,
@@ -240,8 +241,7 @@ export class Client extends EventEmitter<ClientEvents> {
     // Handle Handshakes
     if (message.reply === 'handshake') {
       if (message.status === 'error') {
-        // TODO
-        return
+        throw new ClientError(message)
       }
 
       const connection: Connection = {
