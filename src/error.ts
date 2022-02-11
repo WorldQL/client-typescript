@@ -1,6 +1,7 @@
 import { type Error as ErrorInterface } from './types/clientBound.js'
 
-export const errorSymbol = Symbol('ClientError')
+const errorSymbol = Symbol('ClientError')
+
 // @ts-expect-error Type Predicate
 export const isClientError: (
   error: unknown
