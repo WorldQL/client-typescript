@@ -11,6 +11,8 @@ import { type Uuid, type Vector3 } from './types/common.js'
 import {
   type HandshakeRequest,
   type ServerMessage,
+  type ServerMessagePayload,
+  type WorldSubscribeRequest,
 } from './types/serverBound.js'
 import { decode, encode } from './utils/msgpack.js'
 import { generateUuid, uuidString } from './utils/uuid.js'
@@ -78,15 +80,22 @@ const isFullyConnected: (
 }
 // #endregion
 
+type SendCallback = (message: ClientMessageReply) => void
+type SendQueueItem = readonly [message: ServerMessage, callback: SendCallback]
+
 export class Client extends EventEmitter<ClientEvents> {
   private readonly _options: Readonly<ClientOptions>
+  private readonly _sendQueue: SendQueueItem[]
 
   private _connection: PartialConnection | Connection | undefined
+  private _inFlight: SendQueueItem | undefined
 
   constructor(options: Readonly<ClientOptions>) {
     super()
 
     this._options = options
+    this._sendQueue = []
+
     if (options.autoconnect) this.connect()
   }
 
@@ -151,6 +160,35 @@ export class Client extends EventEmitter<ClientEvents> {
     }
 
     this._connection = undefined
+  }
+  // #endregion
+
+  // #region Public Methods
+  public async worldSubscribe(world: string): Promise<boolean> {
+    return new Promise<boolean>((resolve, reject) => {
+      const payload: WorldSubscribeRequest = {
+        request: 'world_subscribe',
+        world_name: world,
+      }
+
+      this._sendMessage(payload, reply => {
+        if (reply.reply !== 'world_subscribe') {
+          const message = `invalid reply: expected world_subscribe, got ${reply.reply}`
+          reject(new Error(message))
+
+          return
+        }
+
+        if (reply.status === 'error') {
+          const error = new ClientError(reply)
+          reject(error)
+
+          return
+        }
+
+        resolve(reply.updated)
+      })
+    })
   }
   // #endregion
 
@@ -272,7 +310,66 @@ export class Client extends EventEmitter<ClientEvents> {
 
       this._connection = connection
       this.emit('ready')
+
+      return
     }
+
+    if (this._inFlight === undefined) {
+      throw new Error(
+        'Client._inFlight is undefined when a reply is being processed'
+      )
+    }
+
+    // Reset in-flight status
+    const [, callback] = this._inFlight
+    this._inFlight = undefined
+
+    callback(message)
+    this._checkQueue()
   }
   // #endregion
+
+  // #region Sending and Receiving
+  private _sendMessage(
+    payload: ServerMessagePayload,
+    callback: SendCallback
+  ): void {
+    if (!isFullyConnected(this._connection)) {
+      throw new Error('_sendMessage called while not being fully connected')
+    }
+
+    const message: ServerMessage = {
+      sender: this._connection.uuid,
+      token: this._connection.token,
+      payload,
+    }
+
+    this._sendQueue.push([message, callback])
+    this._checkQueue()
+  }
+
+  private _checkQueue(): void {
+    // Ensure connection
+    if (!isFullyConnected(this._connection)) {
+      throw new Error('_checkQueue called while not being fully connected')
+    }
+
+    // Don't send new messages while a message is in-flight
+    if (this._inFlight !== undefined) {
+      return
+    }
+
+    // Pop element from start of queue
+    const item = this._sendQueue.shift()
+    if (item === undefined) {
+      return
+    }
+
+    const [message] = item
+    const encoded = encode(message)
+
+    this._inFlight = item
+    this._connection.ws.send(encoded)
+  }
+  // Endregion
 }
