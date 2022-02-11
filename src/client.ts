@@ -376,5 +376,5 @@ export class Client extends EventEmitter<ClientEvents> {
 
     this._connection.ws.send(encoded)
   }
-  // Endregion
+  // #endregion
 }
