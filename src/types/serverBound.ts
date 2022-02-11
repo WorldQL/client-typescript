@@ -11,14 +11,14 @@ export type ServerMessagePayload =
   | HeartbeatRequest
   | GlobalMessageRequest
   | LocalMessageRequest
-  | WorldSubscribe
-  | WorldUnsubscribe
-  | AreaSubscribe
-  | AreaUnsubscribe
-  | RecordGet
-  | RecordSet
-  | RecordDelete
-  | RecordClear
+  | WorldSubscribeRequest
+  | WorldUnsubscribeRequest
+  | AreaSubscribeRequest
+  | AreaUnsubscribeRequest
+  | RecordGetRequest
+  | RecordSetRequest
+  | RecordDeleteRequest
+  | RecordClearRequest
 
 export interface HandshakeRequest {
   request: 'handshake'
@@ -45,44 +45,44 @@ export interface LocalMessageRequest {
   data: Uint8Array
 }
 
-export interface WorldSubscribe {
+export interface WorldSubscribeRequest {
   request: 'world_subscribe'
   world_name: string
 }
 
-export interface WorldUnsubscribe {
+export interface WorldUnsubscribeRequest {
   request: 'world_unsubscribe'
   world_name: string
 }
 
-export interface AreaSubscribe {
+export interface AreaSubscribeRequest {
   request: 'area_subscribe'
   world_name: string
   position: Vector3
 }
 
-export interface AreaUnsubscribe {
+export interface AreaUnsubscribeRequest {
   request: 'area_unsubscribe'
   world_name: string
   position: Vector3
 }
 
-export interface RecordGet {
+export interface RecordGetRequest {
   request: 'record_get'
   // TODO
 }
 
-export interface RecordSet {
+export interface RecordSetRequest {
   request: 'record_set'
   // TODO
 }
 
-export interface RecordDelete {
+export interface RecordDeleteRequest {
   request: 'record_delete'
   // TODO
 }
 
-export interface RecordClear {
+export interface RecordClearRequest {
   request: 'record_clear'
   // TODO
 }
