@@ -67,8 +67,9 @@ interface Connection extends PartialConnection {
 
 // @ts-expect-error Type Predicate
 const isFullyConnected: (
-  connection: Connection | PartialConnection
+  connection: Connection | PartialConnection | undefined
 ) => connection is Connection = connection => {
+  if (connection === undefined) return false
   if ('token' in connection) {
     return connection.token !== ''
   }
@@ -94,7 +95,7 @@ export class Client extends EventEmitter<ClientEvents> {
    * Whether or not the connection has been established and the handshake completed
    */
   public get connected(): boolean {
-    return this._connection !== undefined && isFullyConnected(this._connection)
+    return isFullyConnected(this._connection)
   }
 
   /**
