@@ -368,7 +368,12 @@ export class Client extends EventEmitter<ClientEvents> {
     const [message] = item
     const encoded = encode(message)
 
-    this._inFlight = item
+    // Only mark as in-flight for message types that have replies
+    const { request } = message.payload
+    if (request !== 'global_message' && request !== 'local_message') {
+      this._inFlight = item
+    }
+
     this._connection.ws.send(encoded)
   }
   // Endregion
