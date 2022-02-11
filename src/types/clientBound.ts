@@ -35,27 +35,27 @@ export interface HandshakeReply extends ClientMessageReplyCommon {
 
 export interface HeartbeatReply extends ClientMessageReplyCommon {
   reply: 'heartbeat'
-  // TODO
+  no_once?: string
 }
 
 export interface WorldSubscribeReply extends ClientMessageReplyCommon {
   reply: 'world_subscribe'
-  // TODO
+  updated: boolean
 }
 
 export interface WorldUnsubscribeReply extends ClientMessageReplyCommon {
   reply: 'world_unsubscribe'
-  // TODO
+  updated: boolean
 }
 
 export interface AreaSubscribeReply extends ClientMessageReplyCommon {
   reply: 'area_subscribe'
-  // TODO
+  updated: boolean
 }
 
 export interface AreaUnsubscribeReply extends ClientMessageReplyCommon {
   reply: 'area_unsubscribe'
-  // TODO
+  updated: boolean
 }
 
 export interface RecordGetReply extends ClientMessageReplyCommon {
