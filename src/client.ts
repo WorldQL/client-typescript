@@ -245,7 +245,8 @@ export class Client extends EventEmitter<ClientEvents> {
         if (message.message === 'disconnect') {
           this.emit('disconnect', message.reason)
         } else if (message.message === 'unknown_error') {
-          // TODO
+          const error = new ClientError(message.error)
+          this.emit('error', error)
         }
 
         break

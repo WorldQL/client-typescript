@@ -99,7 +99,7 @@ interface SystemMessageEventCommon extends ClientMessageEventCommon {
 export interface SystemMessageEventUnknownError
   extends SystemMessageEventCommon {
   message: 'unknown_error'
-  // TODO
+  error: Error
 }
 
 export interface SystemMessageEventDisconnect extends SystemMessageEventCommon {
