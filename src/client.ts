@@ -7,12 +7,17 @@ import {
   type ClientMessageEvent,
   type ClientMessageReply,
 } from './types/clientBound.js'
-import { type Uuid, type Vector3 } from './types/common.js'
+import { type Replication, type Uuid, type Vector3 } from './types/common.js'
 import {
+  type AreaSubscribeRequest,
+  type AreaUnsubscribeRequest,
+  type GlobalMessageRequest,
   type HandshakeRequest,
+  type LocalMessageRequest,
   type ServerMessage,
   type ServerMessagePayload,
   type WorldSubscribeRequest,
+  type WorldUnsubscribeRequest,
 } from './types/serverBound.js'
 import { decode, encode } from './utils/msgpack.js'
 import { generateUuid, uuidString } from './utils/uuid.js'
@@ -188,6 +193,131 @@ export class Client extends EventEmitter<ClientEvents> {
 
         resolve(reply.updated)
       })
+    })
+  }
+
+  public async worldUnsubscribe(world: string): Promise<boolean> {
+    return new Promise<boolean>((resolve, reject) => {
+      const payload: WorldUnsubscribeRequest = {
+        request: 'world_unsubscribe',
+        world_name: world,
+      }
+
+      this._sendMessage(payload, reply => {
+        if (reply.reply !== 'world_unsubscribe') {
+          const message = `invalid reply: expected world_unsubscribe, got ${reply.reply}`
+          reject(new Error(message))
+
+          return
+        }
+
+        if (reply.status === 'error') {
+          const error = new ClientError(reply)
+          reject(error)
+
+          return
+        }
+
+        resolve(reply.updated)
+      })
+    })
+  }
+
+  public async areaSubscribe(
+    world: string,
+    position: Vector3
+  ): Promise<boolean> {
+    return new Promise<boolean>((resolve, reject) => {
+      const payload: AreaSubscribeRequest = {
+        request: 'area_subscribe',
+        world_name: world,
+        position,
+      }
+
+      this._sendMessage(payload, reply => {
+        if (reply.reply !== 'area_subscribe') {
+          const message = `invalid reply: expected area_subscribe, got ${reply.reply}`
+          reject(new Error(message))
+
+          return
+        }
+
+        if (reply.status === 'error') {
+          const error = new ClientError(reply)
+          reject(error)
+
+          return
+        }
+
+        resolve(reply.updated)
+      })
+    })
+  }
+
+  public async areaUnsubscribe(
+    world: string,
+    position: Vector3
+  ): Promise<boolean> {
+    return new Promise<boolean>((resolve, reject) => {
+      const payload: AreaUnsubscribeRequest = {
+        request: 'area_unsubscribe',
+        world_name: world,
+        position,
+      }
+
+      this._sendMessage(payload, reply => {
+        if (reply.reply !== 'area_unsubscribe') {
+          const message = `invalid reply: expected area_unsubscribe, got ${reply.reply}`
+          reject(new Error(message))
+
+          return
+        }
+
+        if (reply.status === 'error') {
+          const error = new ClientError(reply)
+          reject(error)
+
+          return
+        }
+
+        resolve(reply.updated)
+      })
+    })
+  }
+
+  public globalMessage(
+    world: string,
+    data: Uint8Array,
+    replication: Replication
+  ): void {
+    const payload: GlobalMessageRequest = {
+      request: 'global_message',
+      world_name: world,
+      replication,
+      data,
+    }
+
+    this._sendMessage(payload, () => {
+      // No-op
+    })
+  }
+
+  public localMessage(
+    world: string,
+    position: Vector3,
+    data: Uint8Array,
+    replication: Replication
+  ): void {
+    const payload: LocalMessageRequest = {
+      request: 'local_message',
+      world_name: world,
+      position,
+      replication,
+      data,
+    }
+
+    this._sendMessage(payload, () => {
+      // No-op
     })
   }
   // #endregion
