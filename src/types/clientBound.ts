@@ -1,4 +1,4 @@
-import { type Uuid, type Vector3 } from './common.js'
+import { type Record, type Uuid, type Vector3 } from './common.js'
 
 export type ClientMessage = ClientMessageReply | ClientMessageEvent
 
@@ -60,22 +60,23 @@ export interface AreaUnsubscribeReply extends ClientMessageReplyCommon {
 
 export interface RecordGetReply extends ClientMessageReplyCommon {
   reply: 'record_get'
-  // TODO
+  records: readonly Record[]
 }
 
 export interface RecordSetReply extends ClientMessageReplyCommon {
   reply: 'record_set'
-  // TODO
+  created: number
+  updated: number
 }
 
 export interface RecordDeleteReply extends ClientMessageReplyCommon {
   reply: 'record_delete'
-  // TODO
+  affected: number
 }
 
 export interface RecordClearReply extends ClientMessageReplyCommon {
   reply: 'record_clear'
-  // TODO
+  affected: number
 }
 // #endregion
 

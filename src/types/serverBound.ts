@@ -1,4 +1,10 @@
-import { type Replication, type Uuid, type Vector3 } from './common.js'
+import {
+  type PartialRecord,
+  type Record,
+  type Replication,
+  type Uuid,
+  type Vector3,
+} from './common.js'
 
 export interface ServerMessage {
   sender: Uuid
@@ -67,22 +73,35 @@ export interface AreaUnsubscribeRequest {
   position: Vector3
 }
 
-export interface RecordGetRequest {
+interface RecordGetRequestCommon {
   request: 'record_get'
-  // TODO
 }
+
+export interface RecordGetRequestArea extends RecordGetRequestCommon {
+  lookup: 'area'
+  world_name: string
+  position: Vector3
+}
+
+export interface RecordGetRequestUuid extends RecordGetRequestCommon {
+  lookup: 'uuid'
+  records: readonly PartialRecord[]
+}
+
+export type RecordGetRequest = RecordGetRequestArea | RecordGetRequestUuid
 
 export interface RecordSetRequest {
   request: 'record_set'
-  // TODO
+  records: readonly Record[]
 }
 
 export interface RecordDeleteRequest {
   request: 'record_delete'
-  // TODO
+  records: readonly PartialRecord[]
 }
 
 export interface RecordClearRequest {
   request: 'record_clear'
-  // TODO
+  world_name: string
+  position?: Vector3
 }
