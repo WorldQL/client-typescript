@@ -7,13 +7,24 @@ import {
   type ClientMessageEvent,
   type ClientMessageReply,
 } from './types/clientBound.js'
-import { type Replication, type Uuid, type Vector3 } from './types/common.js'
+import {
+  type PartialRecord,
+  type Record,
+  type Replication,
+  type Uuid,
+  type Vector3,
+} from './types/common.js'
 import {
   type AreaSubscribeRequest,
   type AreaUnsubscribeRequest,
   type GlobalMessageRequest,
   type HandshakeRequest,
   type LocalMessageRequest,
+  type RecordClearRequest,
+  type RecordDeleteRequest,
+  type RecordGetRequestArea,
+  type RecordGetRequestUuid,
+  type RecordSetRequest,
   type ServerMessage,
   type ServerMessagePayload,
   type WorldSubscribeRequest,
@@ -318,6 +329,154 @@ export class Client extends EventEmitter<ClientEvents> {
 
     this._sendMessage(payload, () => {
       // No-op
+    })
+  }
+
+  public async recordGetByArea(
+    world: string,
+    position: Vector3
+  ): Promise<readonly Record[]> {
+    return new Promise<readonly Record[]>((resolve, reject) => {
+      const payload: RecordGetRequestArea = {
+        request: 'record_get',
+        lookup: 'area',
+        world_name: world,
+        position,
+      }
+
+      this._sendMessage(payload, reply => {
+        if (reply.reply !== 'record_get') {
+          const message = `invalid reply: expected record_get, got ${reply.reply}`
+          reject(new Error(message))
+
+          return
+        }
+
+        if (reply.status === 'error') {
+          const error = new ClientError(reply)
+          reject(error)
+
+          return
+        }
+
+        resolve(reply.records)
+      })
+    })
+  }
+
+  public async recordGetByUuid(
+    ...records: readonly PartialRecord[]
+  ): Promise<readonly Record[]> {
+    return new Promise<readonly Record[]>((resolve, reject) => {
+      const payload: RecordGetRequestUuid = {
+        request: 'record_get',
+        lookup: 'uuid',
+        records,
+      }
+
+      this._sendMessage(payload, reply => {
+        if (reply.reply !== 'record_get') {
+          const message = `invalid reply: expected record_get, got ${reply.reply}`
+          reject(new Error(message))
+
+          return
+        }
+
+        if (reply.status === 'error') {
+          const error = new ClientError(reply)
+          reject(error)
+
+          return
+        }
+
+        resolve(reply.records)
+      })
+    })
+  }
+
+  public async recordSet(
+    ...records: readonly Record[]
+  ): Promise<readonly [created: number, updated: number]> {
+    return new Promise((resolve, reject) => {
+      const payload: RecordSetRequest = {
+        request: 'record_set',
+        records,
+      }
+
+      this._sendMessage(payload, reply => {
+        if (reply.reply !== 'record_set') {
+          const message = `invalid reply: expected record_set, got ${reply.reply}`
+          reject(new Error(message))
+
+          return
+        }
+
+        if (reply.status === 'error') {
+          const error = new ClientError(reply)
+          reject(error)
+
+          return
+        }
+
+        resolve([reply.created, reply.updated])
+      })
+    })
+  }
+
+  public async recordDelete(
+    ...records: readonly PartialRecord[]
+  ): Promise<number> {
+    return new Promise<number>((resolve, reject) => {
+      const payload: RecordDeleteRequest = {
+        request: 'record_delete',
+        records,
+      }
+
+      this._sendMessage(payload, reply => {
+        if (reply.reply !== 'record_delete') {
+          const message = `invalid reply: expected record_delete, got ${reply.reply}`
+          reject(new Error(message))
+
+          return
+        }
+
+        if (reply.status === 'error') {
+          const error = new ClientError(reply)
+          reject(error)
+
+          return
+        }
+
+        resolve(reply.affected)
+      })
+    })
+  }
+
+  public async recordClear(world: string, position?: Vector3): Promise<number> {
+    return new Promise<number>((resolve, reject) => {
+      const payload: RecordClearRequest = {
+        request: 'record_clear',
+        world_name: world,
+        position,
+      }
+
+      this._sendMessage(payload, reply => {
+        if (reply.reply !== 'record_clear') {
+          const message = `invalid reply: expected record_clear, got ${reply.reply}`
+          reject(new Error(message))
+
+          return
+        }
+
+        if (reply.status === 'error') {
+          const error = new ClientError(reply)
+          reject(error)
+
+          return
+        }
+
+        resolve(reply.affected)
+      })
     })
   }
   // #endregion
