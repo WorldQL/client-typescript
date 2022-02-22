@@ -334,14 +334,16 @@ export class Client extends EventEmitter<ClientEvents> {
 
   public async recordGetByArea(
     world: string,
-    position: Vector3
+    pos_1: Vector3,
+    pos_2: Vector3
   ): Promise<readonly Record[]> {
     return new Promise<readonly Record[]>((resolve, reject) => {
       const payload: RecordGetRequestArea = {
         request: 'record_get',
-        lookup: 'area',
+        lookup: 'by_area',
         world_name: world,
-        position,
+        pos_1,
+        pos_2,
       }
 
       this._sendMessage(payload, reply => {
@@ -370,7 +372,7 @@ export class Client extends EventEmitter<ClientEvents> {
     return new Promise<readonly Record[]>((resolve, reject) => {
       const payload: RecordGetRequestUuid = {
         request: 'record_get',
-        lookup: 'uuid',
+        lookup: 'by_uuid',
         records,
       }
 
@@ -452,12 +454,46 @@ export class Client extends EventEmitter<ClientEvents> {
     })
   }
 
-  public async recordClear(world: string, position?: Vector3): Promise<number> {
+  public async recordClearByWorld(world: string): Promise<number> {
     return new Promise<number>((resolve, reject) => {
       const payload: RecordClearRequest = {
         request: 'record_clear',
+        clear: 'by_world',
         world_name: world,
-        position,
+      }
+
+      this._sendMessage(payload, reply => {
+        if (reply.reply !== 'record_clear') {
+          const message = `invalid reply: expected record_clear, got ${reply.reply}`
+          reject(new Error(message))
+
+          return
+        }
+
+        if (reply.status === 'error') {
+          const error = new ClientError(reply)
+          reject(error)
+
+          return
+        }
+
+        resolve(reply.affected)
+      })
+    })
+  }
+
+  public async recordClearByArea(
+    world: string,
+    pos_1: Vector3,
+    pos_2: Vector3
+  ): Promise<number> {
+    return new Promise<number>((resolve, reject) => {
+      const payload: RecordClearRequest = {
+        request: 'record_clear',
+        clear: 'by_area',
+        world_name: world,
+        pos_1,
+        pos_2,
       }
 
       this._sendMessage(payload, reply => {
