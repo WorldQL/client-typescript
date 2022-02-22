@@ -13,9 +13,9 @@ export enum Replication {
 export interface PartialRecord {
   uuid: Uuid
   world_name: string
-  position: Vector3
 }
 
 export interface Record extends PartialRecord {
+  position: Vector3
   data?: Uint8Array
 }

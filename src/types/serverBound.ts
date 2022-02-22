@@ -78,13 +78,14 @@ interface RecordGetRequestCommon {
 }
 
 export interface RecordGetRequestArea extends RecordGetRequestCommon {
-  lookup: 'area'
+  lookup: 'by_area'
   world_name: string
-  position: Vector3
+  pos_1: Vector3
+  pos_2: Vector3
 }
 
 export interface RecordGetRequestUuid extends RecordGetRequestCommon {
-  lookup: 'uuid'
+  lookup: 'by_uuid'
   records: readonly PartialRecord[]
 }
 
@@ -100,8 +101,22 @@ export interface RecordDeleteRequest {
   records: readonly PartialRecord[]
 }
 
-export interface RecordClearRequest {
+interface RecordClearRequestCommon {
   request: 'record_clear'
-  world_name: string
-  position?: Vector3
 }
+
+export interface RecordClearRequestWorld extends RecordClearRequestCommon {
+  clear: 'by_world'
+  world_name: string
+}
+
+export interface RecordClearRequestArea extends RecordClearRequestCommon {
+  clear: 'by_area'
+  world_name: string
+  pos_1: Vector3
+  pos_2: Vector3
+}
+
+export type RecordClearRequest =
+  | RecordClearRequestWorld
+  | RecordClearRequestArea
